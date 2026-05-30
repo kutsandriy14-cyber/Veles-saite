@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+body {
+  background-color: #05070a;
+  color: #f3f4f6;
+  font-family: inherit;
+}
+
+.atmosphere {
+  background: radial-gradient(circle at 50% 0%, rgba(242, 125, 38, 0.18) 0%, transparent 65%),
+              radial-gradient(circle at 100% 100%, rgba(38, 153, 242, 0.08) 0%, transparent 50%),
+              #07090e;
+}
+
+.glass-card {
+  background: rgba(13, 16, 23, 0.45);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(242, 125, 38, 0.2);
+  box-shadow: 0 12px 40px 0 rgba(242, 125, 38, 0.04), 0 0 0 1px rgba(242, 125, 38, 0.1);
+}
+
+.accent-amber {
+  color: #f27d26;
+}
+
+.bg-accent-amber {
+  background-color: #f27d26;
+}
+
+.border-accent-amber {
+  border-color: #f27d26;
+}
+
+.glow-amber {
+  text-shadow: 0 0 20px rgba(242, 125, 38, 0.6);
+}
+
+.glow-text-white {
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float-slow {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+.pulse-glow {
+  animation: pulse-ring 3s ease-in-out infinite;
+}
