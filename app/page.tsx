@@ -253,7 +253,7 @@ export default function HomePage() {
                       <div>
                         <h4 className="text-sm font-bold text-gray-200">Скачать лаунчер и сборку модов</h4>
                         <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                          Установите лаунчер с поддержкой CurseForge (Prism Launcher, CurseForge App или любой любимый лаунчер) или загрузите готовый архив с модами во вкладке «Сборка модов & Файлы».
+                          Установите лаунчер с поддержкой CurseForge (Prism Launcher, CurseForge App или любой любимый лаунчер) или загрузите готовую сборку в боковой панели «Сборка модов & Файлы».
                         </p>
                       </div>
                     </div>
@@ -403,7 +403,7 @@ export default function HomePage() {
             <div className="space-y-3">
               {/* CurseForge Link Button */}
               <a 
-                href="https://www.curseforge.com/minecraft/modpacks/terrafirmagreg-modern"
+                href="https://www.curseforge.com/minecraft/modpacks/terrafirmagreg-modern/download/8037324"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 p-3.5 bg-[#f27d26]/10 hover:bg-[#f27d26]/25 border border-[#f27d26]/30 hover:border-[#f27d26]/60 rounded-xl transition-all group text-left"
@@ -412,35 +412,14 @@ export default function HomePage() {
                   <Download className="w-4 h-4 text-[#f27d26]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">CurseForge Сборка</div>
-                  <div className="text-[10px] text-gray-400 truncate">Официальная страница сборки</div>
-                </div>
-                <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-all shrink-0" />
-              </a>
-
-              {/* Direct Drive Link Button */}
-              <a 
-                href="https://drive.google.com/file/d/1EzbKPzirwjnnwIufal6cvMP8c7vxYtNp/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3.5 bg-white/5 hover:bg-white/10 border border-white/15 hover:border-white/20 rounded-xl transition-all group text-left"
-              >
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4 text-blue-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase">Скачать моды напрямую</div>
-                  <div className="text-[10px] text-gray-400 truncate">ZIP Архивированные моды с Google Drive</div>
+                  <div className="text-xs font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
+                  <div className="text-[10px] text-gray-400 truncate">Прямая загрузка сборки модов</div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-all shrink-0" />
               </a>
             </div>
 
-            <div className="mt-4 p-3 bg-black/30 rounded-lg border border-white/5">
-              <span className="text-[10px] text-gray-400 font-mono italic">
-                * Рекомендуется использовать CurseForge для автоматического обновления версий модов и плагинов.
-              </span>
-            </div>
+
           </div>
 
         </div>
