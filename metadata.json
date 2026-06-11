@@ -1,6 +1,6 @@
 {
-  "name": "TerraFirmaCraft Veles PlayGame",
-  "description": "Сайт майнкрафт сервера Terra Firma Craft (Сезон 3) от Veles PlayGame. Ссылки на моды, Discord, Telegram, TikTok и IP адреса сервера.",
+  "name": "Terra Firma Greg Modern",
+  "description": "Сайт майнкрафт сервера Terra Firma Greg Modern (Сезон 3) от Veles PlayGame. Ссылки на моды, Discord, Telegram, TikTok и IP адреса сервера.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

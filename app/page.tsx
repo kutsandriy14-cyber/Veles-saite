@@ -60,9 +60,9 @@ export default function HomePage() {
             </span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter italic select-none">
-            <span className="glow-amber text-[#f27d26]">TERRA FIRMA</span>{' '}
-            <span className="text-white opacity-95 glow-text-white">CRAFT</span>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic select-none">
+            <span className="glow-amber text-[#f27d26] block sm:inline">TERRA FIRMA</span>{' '}
+            <span className="text-white opacity-95 glow-text-white block sm:inline">GREG MODERN</span>
           </h1>
           <p className="text-sm md:text-base text-gray-400 mt-2 font-medium max-w-xl">
             Выживание на реалистичной сборке с технологиями, геологическими исследованиями и суровой дикой природой.
