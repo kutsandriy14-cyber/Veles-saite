@@ -60,12 +60,11 @@ export default function HomePage() {
             </span>
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic select-none">
-            <span className="glow-amber text-[#f27d26] block sm:inline">TERRA FIRMA</span>{' '}
-            <span className="text-white opacity-95 glow-text-white block sm:inline">GREG MODERN</span>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic select-none uppercase">
+            <span className="glow-amber text-[#f27d26] block sm:inline">CRAFTORIA</span>
           </h1>
           <p className="text-sm md:text-base text-gray-400 mt-2 font-medium max-w-xl">
-            Выживание на реалистичной сборке с технологиями, геологическими исследованиями и суровой дикой природой.
+            Современная технологическая сборка с передовыми фабриками, автоматизацией, квестами и потрясающим миром.
           </p>
         </div>
 
@@ -77,7 +76,7 @@ export default function HomePage() {
             <span className="text-xs text-amber-500 font-mono font-bold">Выживание</span>
           </div>
           <div className="text-xs text-gray-400 font-mono text-left md:text-right">
-            Версия: <span className="text-white font-semibold">1.20.1</span> — TerraFirmaGreg
+            Версия: <span className="text-white font-semibold">1.21.1</span> — Craftoria
           </div>
           <div className="text-[11px] text-gray-500 font-mono">
             Администратор сервера: <span className="text-gray-300">Veles PlayGame</span>
@@ -204,7 +203,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-2">Глобальный Третий Сезон</h3>
                     <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                      Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">TerraFirmaGreg Modern</strong>. Это синергия геологического выживания Minecraft TerraFirmaCraft с автоматизацией и инженерией GregTech. 
+                      Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">Craftoria</strong>. Это современная технологическая сборка нового поколения для Minecraft 1.21, объединяющая лучшие индустриальные модификации, продуманную квестовую систему и потрясающую генерацию мира.
                     </p>
                   </div>
 
@@ -213,9 +212,9 @@ export default function HomePage() {
                       <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
                         <Flame className="w-4.5 h-4.5 text-[#f27d26]" />
                       </div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Выживание TFC</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Автоматизация и механика</h4>
                       <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Реалистичная смена времён года, порча еды, жажда, добыча руды путём промывания песка и шахты с обвалами сводов.
+                        Полномасштабная автоматизация фабрик с помощью Create, Mekanism, AE2, Thermal Series и множества других современных технологических модов.
                       </p>
                     </div>
 
@@ -223,9 +222,9 @@ export default function HomePage() {
                       <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
                         <Cpu className="w-4.5 h-4.5 text-blue-400" />
                       </div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Технологии Greg</h4>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Квесты и гайды</h4>
                       <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Пройдите путь от неолита, ковки медных кирок до эпохи пара, высокого давления, электричества и сложнейших химических реакторов.
+                        Удобная и детальная книга квестов поможет вам освоить все технологии шаг за шагом — от простых механизмов до сложных систем.
                       </p>
                     </div>
 
@@ -253,7 +252,7 @@ export default function HomePage() {
                       <div>
                         <h4 className="text-sm font-bold text-gray-200">Скачать лаунчер и сборку модов</h4>
                         <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                          Установите лаунчер с поддержкой CurseForge (Prism Launcher, CurseForge App или любой любимый лаунчер) или загрузите готовую сборку в боковой панели «Сборка модов & Файлы».
+                          Установите лаунчер с поддержкой Forge (Prism Launcher, CurseForge App, Modrinth или любой любимый лаунчер) или загрузите готовую Forge сборку в боковой панели «Сборка модов & Файлы».
                         </p>
                       </div>
                     </div>
@@ -394,26 +393,26 @@ export default function HomePage() {
             </h3>
 
             <div className="mb-4">
-              <div className="text-base font-bold italic text-white mb-0.5">TerraFirmaGreg Modern</div>
+              <div className="text-base font-bold italic text-white mb-0.5">Craftoria [Forge]</div>
               <div className="text-[11px] text-gray-400 leading-normal">
-                Сезон 03 базируется на этой сборке. Установите её, чтобы зайти на сервер.
+                Сезон 03 базируется на сборке Craftoria для Forge / NeoForge. Скачайте её, чтобы зайти на сервер.
               </div>
             </div>
 
             <div className="space-y-3">
-              {/* CurseForge Link Button */}
+              {/* Google Drive Link Button */}
               <a 
-                href="https://www.curseforge.com/minecraft/modpacks/terrafirmagreg-modern/download/8037324"
+                href="https://drive.google.com/file/d/1Uzxi6EUEYfaLDqFi-K3uv1fK20ITCZaM/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3.5 bg-[#f27d26]/10 hover:bg-[#f27d26]/25 border border-[#f27d26]/30 hover:border-[#f27d26]/60 rounded-xl transition-all group text-left"
+                className="flex items-center gap-3 p-3.5 bg-blue-500/10 hover:bg-blue-500/25 border border-blue-500/30 hover:border-blue-500/60 rounded-xl transition-all group text-left"
               >
-                <div className="w-8 h-8 rounded-lg bg-orange-600/20 flex items-center justify-center shrink-0">
-                  <Download className="w-4 h-4 text-[#f27d26]" />
+                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0">
+                  <Download className="w-4 h-4 text-blue-400" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
-                  <div className="text-[10px] text-gray-400 truncate">Прямая загрузка сборки модов</div>
+                  <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase">Скачать сборку Craftoria [Forge]</div>
+                  <div className="text-[10px] text-gray-400 truncate">Скачать архив напрямую с Google Drive</div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-all shrink-0" />
               </a>
@@ -433,7 +432,7 @@ export default function HomePage() {
             Разработка и запуск &copy; 2026. Сервер под управлением <span className="text-gray-300 font-medium">Veles PlayGame</span>
           </p>
           <p className="text-[9px] text-gray-600 mt-1 font-mono">
-            Данный сайт создан для сообщества игроков Terra Firma Craft. Все права на Minecraft принадлежат Mojang AB.
+            Данный сайт создан для сообщества игроков Craftoria. Все права на Minecraft принадлежат Mojang AB.
           </p>
         </div>
         

@@ -1,6 +1,6 @@
 {
-  "name": "Terra Firma Greg Modern",
-  "description": "Сайт майнкрафт сервера Terra Firma Greg Modern (Сезон 3) от Veles PlayGame. Ссылки на моды, Discord, Telegram, TikTok и IP адреса сервера.",
+  "name": "Craftoria",
+  "description": "Сайт майнкрафт сервера Craftoria (Сезон 3) от Veles PlayGame. Ссылки на сборку, Discord, Telegram, TikTok и IP адреса сервера.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
