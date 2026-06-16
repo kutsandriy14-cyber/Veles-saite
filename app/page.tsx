@@ -22,20 +22,13 @@ import {
 
 export default function HomePage() {
   const primaryIp = '194.39.67.137:25572';
-  const alternativeIp = 'fuck.sos-al.net';
   
   const [copiedPrimary, setCopiedPrimary] = useState(false);
-  const [copiedAlternative, setCopiedAlternative] = useState(false);
 
-  const copyToClipboard = (text: string, isPrimary: boolean) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      if (isPrimary) {
-        setCopiedPrimary(true);
-        setTimeout(() => setCopiedPrimary(false), 2000);
-      } else {
-        setCopiedAlternative(true);
-        setTimeout(() => setCopiedAlternative(false), 2000);
-      }
+      setCopiedPrimary(true);
+      setTimeout(() => setCopiedPrimary(false), 2000);
     });
   };
 
@@ -56,7 +49,7 @@ export default function HomePage() {
               ESTABLISHED 2026
             </span>
             <span className="text-[10px] tracking-widest uppercase text-[#f27d26] font-mono font-bold animate-pulse">
-              ● СЕЗОН 3 СТАРТОВАЛ
+              ● СЕЗОН 4 СТАРТОВАЛ
             </span>
           </div>
           
@@ -109,7 +102,7 @@ export default function HomePage() {
                   {primaryIp}
                 </span>
                 <button 
-                  onClick={() => copyToClipboard(primaryIp, true)}
+                  onClick={() => copyToClipboard(primaryIp)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98] ${
                     copiedPrimary 
                       ? 'bg-green-500 text-black shadow-lg shadow-green-500/20' 
@@ -129,28 +122,6 @@ export default function HomePage() {
                     </>
                   )}
                 </button>
-              </div>
-
-              <div className="mb-4">
-                {/* Alternative IP Node */}
-                <div className="w-full bg-white/[0.02] border border-white/5 hover:border-white/10 p-4 rounded-xl flex items-center justify-between gap-2 transition-all">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mono mb-1">Альтернативный IP</div>
-                    <div className="text-sm font-mono text-amber-500 font-bold">{alternativeIp}</div>
-                  </div>
-                  <button 
-                    onClick={() => copyToClipboard(alternativeIp, false)}
-                    className={`p-2.5 rounded-lg transition-all ${
-                      copiedAlternative 
-                        ? 'bg-green-500 text-black' 
-                        : 'bg-white/5 hover:bg-white/10 text-gray-300'
-                    }`}
-                    title="Копировать альтернативный адрес"
-                    id="btn-copy-alternative"
-                  >
-                    {copiedAlternative ? <Check className="w-4 h-4 stroke-[3px]" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -201,7 +172,7 @@ export default function HomePage() {
               {activeTab === 'features' && (
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-2">Глобальный Третий Сезон</h3>
+                    <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-2">Глобальный Четвертый Сезон</h3>
                     <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
                       Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">Craftoria</strong>. Это современная технологическая сборка нового поколения для Minecraft 1.21, объединяющая лучшие индустриальные модификации, продуманную квестовую систему и потрясающую генерацию мира.
                     </p>
@@ -368,7 +339,7 @@ export default function HomePage() {
                   <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-[#f27d26] transition-colors" />
                 </div>
                 <p className="text-[11px] text-gray-400 pl-10">
-                  Забавные моменты, вырезки со стримов, хайлайты третьего сезона.
+                  Забавные моменты, вырезки со стримов, хайлайты четвертого сезона.
                 </p>
               </a>
 
@@ -395,7 +366,7 @@ export default function HomePage() {
             <div className="mb-4">
               <div className="text-base font-bold italic text-white mb-0.5">Craftoria [Forge]</div>
               <div className="text-[11px] text-gray-400 leading-normal">
-                Сезон 03 базируется на сборке Craftoria для Forge / NeoForge. Скачайте её, чтобы зайти на сервер.
+                Сезон 04 базируется на сборке Craftoria только для Forge. Скачайте её, чтобы зайти на сервер.
               </div>
             </div>
 
@@ -439,7 +410,7 @@ export default function HomePage() {
         <div className="flex gap-6 text-[10px] uppercase tracking-widest text-gray-500 font-mono">
           <span className="hover:text-[#f27d26] transition-colors cursor-default font-semibold">Realism</span>
           <span className="hover:text-[#f27d26] transition-colors cursor-default">Tech-focused</span>
-          <span className="hover:text-blue-400 transition-colors cursor-default">Survival Season 03</span>
+          <span className="hover:text-blue-400 transition-colors cursor-default">Survival Season 04</span>
         </div>
       </footer>
     </div>
