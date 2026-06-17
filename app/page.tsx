@@ -21,14 +21,21 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
-  const primaryIp = '194.39.67.137:25572';
+  const primaryIp = 'veles.imba.land';
+  const alternativeIp = '213.152.43.48:25572';
   
   const [copiedPrimary, setCopiedPrimary] = useState(false);
+  const [copiedAlternative, setCopiedAlternative] = useState(false);
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, isPrimary: boolean) => {
     navigator.clipboard.writeText(text).then(() => {
-      setCopiedPrimary(true);
-      setTimeout(() => setCopiedPrimary(false), 2000);
+      if (isPrimary) {
+        setCopiedPrimary(true);
+        setTimeout(() => setCopiedPrimary(false), 2000);
+      } else {
+        setCopiedAlternative(true);
+        setTimeout(() => setCopiedAlternative(false), 2000);
+      }
     });
   };
 
@@ -97,12 +104,12 @@ export default function HomePage() {
 
               <h2 className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-2">Основной Адрес Подключения</h2>
               
-              <div className="bg-black/40 border border-white/5 px-4 py-3.5 md:py-5 rounded-xl flex items-center justify-between gap-4 mb-6 relative hover:border-white/10 transition-colors">
-                <span className="text-lg md:text-2xl font-mono text-white tracking-tight break-all font-bold">
+              <div className="bg-black/40 border border-white/5 px-4 py-3.5 md:py-5 rounded-xl flex items-center justify-between gap-4 mb-4 relative hover:border-white/10 transition-colors">
+                <span className="text-lg md:text-2xl font-mono text-[#f27d26] tracking-tight break-all font-bold">
                   {primaryIp}
                 </span>
                 <button 
-                  onClick={() => copyToClipboard(primaryIp)}
+                  onClick={() => copyToClipboard(primaryIp, true)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98] ${
                     copiedPrimary 
                       ? 'bg-green-500 text-black shadow-lg shadow-green-500/20' 
@@ -123,14 +130,43 @@ export default function HomePage() {
                   )}
                 </button>
               </div>
+
+              <h2 className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-2 mt-4">Цифровой IP (Альтернативный)</h2>
+              
+              <div className="bg-black/40 border border-white/5 px-4 py-3.5 md:py-5 rounded-xl flex items-center justify-between gap-4 mb-2 relative hover:border-white/10 transition-colors">
+                <span className="text-lg md:text-2xl font-mono text-white tracking-tight break-all font-bold">
+                  {alternativeIp}
+                </span>
+                <button 
+                  onClick={() => copyToClipboard(alternativeIp, false)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98] ${
+                    copiedAlternative 
+                      ? 'bg-green-500 text-black shadow-lg shadow-green-500/20' 
+                      : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                  }`}
+                  id="btn-copy-alternative"
+                >
+                  {copiedAlternative ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 stroke-[3px]" />
+                      <span>Скопировано</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Копировать</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Quick interactive note */}
-            {copiedPrimary && (
-              <div className="absolute bottom-4 left-6 right-6 bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-lg flex items-center gap-2.5 animate-fadeIn">
+            {(copiedPrimary || copiedAlternative) && (
+              <div className="bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-lg flex items-center gap-2.5 animate-fadeIn mt-4">
                 <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0 animate-pulse" />
-                <span className="text-xs text-green-300">
-                  IP-адрес скопирован в буфер обмена! Теперь вы можете добавить его в Minecraft в раздел «Сетевая игра».
+                <span className="text-xs text-green-300 font-medium">
+                  {copiedPrimary ? 'Домен' : 'Цифровой IP'} успешно скопирован! Добавьте его в Minecraft в раздел «Сетевая игра».
                 </span>
               </div>
             )}
