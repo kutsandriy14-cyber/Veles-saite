@@ -61,22 +61,22 @@ export default function HomePage() {
           </div>
           
           <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic select-none uppercase">
-            <span className="glow-amber text-[#f27d26] block sm:inline">CRAFTORIA</span>
+            <span className="glow-amber text-[#f27d26] block sm:inline">TechEvoDiscovery</span>
           </h1>
           <p className="text-sm md:text-base text-gray-400 mt-2 font-medium max-w-xl">
-            Современная технологическая сборка с передовыми фабриками, автоматизацией, квестами и потрясающим миром.
+            Технологическая сборка нового поколения, сочетающая глубокий инженеринг, автоматизацию фабрик и масштабные исследования.
           </p>
         </div>
 
         <div className="flex flex-col items-start md:items-end gap-1.5 self-stretch md:self-auto bg-white/[0.02] border border-white/5 p-4 rounded-xl backdrop-blur-sm">
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 bg-[#f27d26] text-black text-[11px] font-black tracking-widest uppercase rounded-sm">
-              SEASON 03
+              SEASON 04
             </span>
             <span className="text-xs text-amber-500 font-mono font-bold">Выживание</span>
           </div>
           <div className="text-xs text-gray-400 font-mono text-left md:text-right">
-            Версия: <span className="text-white font-semibold">1.21.1</span> — Craftoria
+            Версия: <span className="text-white font-semibold flex items-center md:justify-end gap-1">1.19.2 <span className="text-[10px] text-orange-400 border border-orange-500/20 px-1 py-0 rounded">Forge</span></span>
           </div>
           <div className="text-[11px] text-gray-500 font-mono">
             Администратор сервера: <span className="text-gray-300">Veles PlayGame</span>
@@ -210,7 +210,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-2">Глобальный Четвертый Сезон</h3>
                     <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                      Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">Craftoria</strong>. Это современная технологическая сборка нового поколения для Minecraft 1.21, объединяющая лучшие индустриальные модификации, продуманную квестовую систему и потрясающую генерацию мира.
+                      Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">TechEvoDiscovery</strong>. Это высокотехнологичная сборка для Minecraft 1.19.2 (Forge), объединяющая лучшие индустриальные модификации, продуманную квестовую систему, комплексную автоматизацию фабрик и массу элементов для научно-технических исследований.
                     </p>
                   </div>
 
@@ -400,26 +400,26 @@ export default function HomePage() {
             </h3>
 
             <div className="mb-4">
-              <div className="text-base font-bold italic text-white mb-0.5">Craftoria [Forge]</div>
+              <div className="text-base font-bold italic text-white mb-0.5">TechEvoDiscovery [Forge]</div>
               <div className="text-[11px] text-gray-400 leading-normal">
-                Сезон 04 базируется на сборке Craftoria только для Forge. Скачайте её, чтобы зайти на сервер.
+                Сезон 04 базируется на сборке TechEvoDiscovery только для Forge. Перейдите на CurseForge, чтобы скачать её.
               </div>
             </div>
 
             <div className="space-y-3">
-              {/* Google Drive Link Button */}
+              {/* CurseForge Link Button */}
               <a 
-                href="https://drive.google.com/file/d/1Uzxi6EUEYfaLDqFi-K3uv1fK20ITCZaM/view?usp=sharing"
+                href="https://www.curseforge.com/minecraft/modpacks/techevdiscovery/files/7629691"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3.5 bg-blue-500/10 hover:bg-blue-500/25 border border-blue-500/30 hover:border-blue-500/60 rounded-xl transition-all group text-left"
+                className="flex items-center gap-3 p-3.5 bg-[#f27d26]/10 hover:bg-[#f27d26]/25 border border-[#f27d26]/30 hover:border-[#f27d26]/60 rounded-xl transition-all group text-left"
               >
-                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center shrink-0">
-                  <Download className="w-4 h-4 text-blue-400" />
+                <div className="w-8 h-8 rounded-lg bg-orange-600/20 flex items-center justify-center shrink-0">
+                  <Download className="w-4 h-4 text-[#f27d26]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase">Скачать сборку Craftoria [Forge]</div>
-                  <div className="text-[10px] text-gray-400 truncate">Скачать архив напрямую с Google Drive</div>
+                  <div className="text-xs font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
+                  <div className="text-[10px] text-gray-400 truncate font-mono">CurseForge Page — TechEvoDiscovery</div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-all shrink-0" />
               </a>
@@ -439,7 +439,7 @@ export default function HomePage() {
             Разработка и запуск &copy; 2026. Сервер под управлением <span className="text-gray-300 font-medium">Veles PlayGame</span>
           </p>
           <p className="text-[9px] text-gray-600 mt-1 font-mono">
-            Данный сайт создан для сообщества игроков Craftoria. Все права на Minecraft принадлежат Mojang AB.
+            Данный сайт создан для сообщества игроков TechEvoDiscovery. Все права на Minecraft принадлежат Mojang AB.
           </p>
         </div>
         

@@ -1,6 +1,6 @@
 {
-  "name": "Craftoria",
-  "description": "Сайт майнкрафт сервера Craftoria (Сезон 4) от Veles PlayGame. Ссылки на сборку, Discord, Telegram, TikTok и IP адреса сервера.",
+  "name": "TechEvoDiscovery",
+  "description": "Сайт майнкрафт сервера TechEvoDiscovery (Сезон 4) от Veles PlayGame. Ссылки на сборку, Discord, Telegram, TikTok и IP адреса сервера.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
