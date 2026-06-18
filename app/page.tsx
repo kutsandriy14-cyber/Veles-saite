@@ -1,19 +1,17 @@
-'use strict';
-
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { motion } from 'motion/react';
 import { 
-  Compass, 
+  Server, 
   Copy, 
-  Check, 
   Download, 
   ExternalLink,
-  MessageSquare, 
-  Flame, 
-  Send, 
-  Layers, 
-  Clock, 
+  MessageCircle,
+  Hash,
+  Video,
+  Youtube,
+  Settings,
   Cpu, 
   CheckCircle2,
   Tv,
@@ -21,434 +19,304 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
-  const primaryIp = 'veles.imba.land';
-  const alternativeIp = '213.152.43.48:25572';
-  
-  const [copiedPrimary, setCopiedPrimary] = useState(false);
-  const [copiedAlternative, setCopiedAlternative] = useState(false);
+  const [copiedIp, setCopiedIp] = useState<string | null>(null);
 
-  const copyToClipboard = (text: string, isPrimary: boolean) => {
-    navigator.clipboard.writeText(text).then(() => {
-      if (isPrimary) {
-        setCopiedPrimary(true);
-        setTimeout(() => setCopiedPrimary(false), 2000);
-      } else {
-        setCopiedAlternative(true);
-        setTimeout(() => setCopiedAlternative(false), 2000);
-      }
-    });
+  const handleCopy = (ip: string) => {
+    navigator.clipboard.writeText(ip);
+    setCopiedIp(ip);
+    setTimeout(() => setCopiedIp(null), 2000);
   };
 
-  const [activeTab, setActiveTab] = useState<'features' | 'guide'>('features');
-
   return (
-    <div className="min-h-screen atmosphere text-gray-100 flex flex-col relative overflow-hidden font-sans">
+    <main className="min-h-screen atmosphere text-gray-100 selection:bg-[#f27d26]/30 overflow-hidden relative font-sans">
       
-      {/* Decorative ambient background glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Background elements */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#f27d26]/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px]" />
+      </div>
 
-      {/* Header Section */}
-      <header className="relative z-10 pt-10 px-6 sm:px-12 md:max-w-7xl md:mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 pb-2">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[10px] tracking-[0.4em] uppercase opacity-65 font-mono bg-white/5 px-2.5 py-1 rounded border border-white/5">
-              ESTABLISHED 2026
-            </span>
-            <span className="text-[10px] tracking-widest uppercase text-[#f27d26] font-mono font-bold animate-pulse">
-              ● СЕЗОН 4 СТАРТОВАЛ
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 lg:py-24 relative z-10 min-h-screen flex flex-col">
+        
+        {/* Header Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-16"
+        >
+          <div className="mb-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#f27d26]/10 border border-[#f27d26]/20 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
+              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Season 04 • Live</span>
             </span>
           </div>
-          
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter italic select-none uppercase">
-            <span className="glow-amber text-[#f27d26] block sm:inline">TechEvoDiscovery</span>
+
+          <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
+            TECHEVODISCOVERY
           </h1>
-          <p className="text-sm md:text-base text-gray-400 mt-2 font-medium max-w-xl">
-            Технологическая сборка нового поколения, сочетающая глубокий инженеринг, автоматизацию фабрик и масштабные исследования.
-          </p>
-        </div>
 
-        <div className="flex flex-col items-start md:items-end gap-1.5 self-stretch md:self-auto bg-white/[0.02] border border-white/5 p-4 rounded-xl backdrop-blur-sm">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-[#f27d26] text-black text-[11px] font-black tracking-widest uppercase rounded-sm">
-              SEASON 04
-            </span>
-            <span className="text-xs text-amber-500 font-mono font-bold">Выживание</span>
-          </div>
-          <div className="text-xs text-gray-400 font-mono text-left md:text-right">
-            Версия: <span className="text-white font-semibold flex items-center md:justify-end gap-1">1.19.2 <span className="text-[10px] text-orange-400 border border-orange-500/20 px-1 py-0 rounded">Forge</span></span>
-          </div>
-          <div className="text-[11px] text-gray-500 font-mono">
-            Администратор сервера: <span className="text-gray-300">Veles PlayGame</span>
-          </div>
-        </div>
-      </header>
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+            <p className="text-sm md:text-base text-gray-300 font-medium max-w-2xl leading-relaxed">
+              Высокотехнологичная сборка для Minecraft 1.19.2, объединяющая лучшие индустриальные модификации, продуманную квестовую систему, комплексную автоматизацию машин и массу элементов для научно-технических исследований.
+            </p>
 
-      {/* Main Grid Content */}
-      <main className="relative z-10 flex-1 md:max-w-7xl md:mx-auto w-full px-6 sm:px-12 py-8 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Left Column: Connection Info & Interactive Area - spans 8 cols */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
+            <div className="flex flex-col items-start md:items-end gap-2 text-sm font-mono shrink-0 pt-1">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400">Версия:</span> 
+                <span className="text-white font-semibold flex items-center gap-1.5">1.19.2 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">Forge</span></span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400">Формат:</span> 
+                <span className="text-white font-bold">Выживание / Квесты</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-gray-500">Администратор:</span> 
+                <span className="text-gray-300">Veles PlayGame</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* IP Addresses & Start playing */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 flex-1">
           
-          {/* Card 1: IPs & Copy */}
-          <div className="glass-card p-6 md:p-8 rounded-2xl relative overflow-hidden flex flex-col justify-between group">
-            {/* Ambient orange blob inside card */}
-            <div className="absolute -right-20 -top-20 w-48 h-48 bg-[#f27d26] opacity-[0.04] rounded-full blur-3xl pointer-events-none"></div>
-            
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="lg:col-span-7 glass-card border-[#3b82f6]/20 bg-gradient-to-br from-[#3b82f6]/[0.05] to-transparent rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden"
+          >
+            {/* Ambient colorful glow for connection block */}
+            <div className="absolute top-0 right-0 -m-16 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 -m-16 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-[#3b82f6]/20 border border-[#3b82f6]/30 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                  <Server className="w-5 h-5 text-[#3b82f6]" />
+                </div>
+                <h2 className="text-xl font-bold text-white tracking-wide uppercase">Подключение</h2>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="relative group/btn">
+                  <div className="absolute inset-0 bg-blue-500/5 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
+                  <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2 pl-1 relative">Основной IP</div>
+                  <button 
+                    onClick={() => handleCopy('veles.imba.land')}
+                    className="w-full flex items-center justify-between p-4 bg-black/40 hover:bg-black/60 border border-blue-500/10 hover:border-blue-500/30 rounded-xl transition-all relative"
+                  >
+                    <span className="font-mono text-lg text-white group-hover/btn:text-blue-400 transition-colors">veles.imba.land</span>
+                    {copiedIp === 'veles.imba.land' ? (
+                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
+                    ) : (
+                      <span className="flex items-center gap-2 text-blue-500/60 group-hover/btn:text-blue-400 transition-colors text-xs font-bold uppercase tracking-wider"><Copy className="w-4 h-4" /> Копировать</span>
+                    )}
+                  </button>
+                </div>
+
+                <div className="relative group/btn">
+                  <div className="absolute inset-0 bg-indigo-500/5 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
+                  <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2 pl-1 relative">Цифровой IP</div>
+                  <button 
+                    onClick={() => handleCopy('213.152.43.48:25572')}
+                    className="w-full flex items-center justify-between p-4 bg-black/40 hover:bg-black/60 border border-indigo-500/10 hover:border-indigo-500/30 rounded-xl transition-all relative"
+                  >
+                    <span className="font-mono text-base text-gray-300 group-hover/btn:text-indigo-400 transition-colors">213.152.43.48:25572</span>
+                    {copiedIp === '213.152.43.48:25572' ? (
+                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
+                    ) : (
+                      <span className="flex items-center gap-2 text-indigo-500/60 group-hover/btn:text-indigo-400 transition-colors text-xs font-bold uppercase tracking-wider"><Copy className="w-4 h-4" /> Копировать</span>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Download Modpack Segment */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="lg:col-span-5 glass-card rounded-2xl p-6 md:p-8 border-[#f27d26]/20 bg-[#f27d26]/[0.02]"
+          >
+            <div className="h-full flex flex-col">
+              <h2 className="text-xl font-bold text-white tracking-wide uppercase mb-2 flex items-center justify-between">
+                <span>Запуск Игры</span>
+                <Settings className="w-5 h-5 text-[#f27d26] float-slow" />
+              </h2>
+              
+              <div className="mb-8">
+                <div className="text-sm font-bold text-white mb-1">Сборка только для Forge</div>
+                <div className="text-xs text-gray-400 leading-relaxed">
+                  Четвертый сезон базируется на модификациях. Скачайте официальный архив сборки с CurseForge для входа на сервер.
+                </div>
+              </div>
+
+              <div className="mt-auto">
+                <a 
+                  href="https://www.curseforge.com/minecraft/modpacks/techevdiscovery/download/7629691"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
+                    <Download className="w-5 h-5 text-[#f27d26]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-white transition-all shrink-0" />
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+
+        {/* Feature Highlights */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+        >
+          <div className="glass-card p-6 rounded-2xl flex items-start gap-4">
+            <Tv className="w-6 h-6 text-[#f27d26] shrink-0" />
             <div>
-              <div className="flex flex-wrap justify-between items-center gap-4 mb-6">
-                <div className="text-xs text-gray-400 font-mono bg-white/5 px-3 py-1 rounded-full border border-white/5">
-                  Режим игры: <span className="text-gray-200">Выживание + Инженерия</span>
-                </div>
-              </div>
-
-              <h2 className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-2">Основной Адрес Подключения</h2>
-              
-              <div className="bg-black/40 border border-white/5 px-4 py-3.5 md:py-5 rounded-xl flex items-center justify-between gap-4 mb-4 relative hover:border-white/10 transition-colors">
-                <span className="text-lg md:text-2xl font-mono text-[#f27d26] tracking-tight break-all font-bold">
-                  {primaryIp}
-                </span>
-                <button 
-                  onClick={() => copyToClipboard(primaryIp, true)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98] ${
-                    copiedPrimary 
-                      ? 'bg-green-500 text-black shadow-lg shadow-green-500/20' 
-                      : 'bg-[#f27d26] text-black hover:bg-orange-500'
-                  }`}
-                  id="btn-copy-primary"
-                >
-                  {copiedPrimary ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 stroke-[3px]" />
-                      <span>Скопировано</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Копировать</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <h2 className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-2 mt-4">Цифровой IP (Альтернативный)</h2>
-              
-              <div className="bg-black/40 border border-white/5 px-4 py-3.5 md:py-5 rounded-xl flex items-center justify-between gap-4 mb-2 relative hover:border-white/10 transition-colors">
-                <span className="text-lg md:text-2xl font-mono text-white tracking-tight break-all font-bold">
-                  {alternativeIp}
-                </span>
-                <button 
-                  onClick={() => copyToClipboard(alternativeIp, false)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shrink-0 hover:scale-[1.02] active:scale-[0.98] ${
-                    copiedAlternative 
-                      ? 'bg-green-500 text-black shadow-lg shadow-green-500/20' 
-                      : 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
-                  }`}
-                  id="btn-copy-alternative"
-                >
-                  {copiedAlternative ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 stroke-[3px]" />
-                      <span>Скопировано</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Копировать</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Quick interactive note */}
-            {(copiedPrimary || copiedAlternative) && (
-              <div className="bg-green-500/10 border border-green-500/20 px-4 py-2.5 rounded-lg flex items-center gap-2.5 animate-fadeIn mt-4">
-                <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0 animate-pulse" />
-                <span className="text-xs text-green-300 font-medium">
-                  {copiedPrimary ? 'Домен' : 'Цифровой IP'} успешно скопирован! Добавьте его в Minecraft в раздел «Сетевая игра».
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Interactive Navigation Area for guides and features */}
-          <div className="glass-card rounded-2xl flex flex-col overflow-hidden">
-            {/* Tab Headers */}
-            <div className="flex border-b border-white/10 bg-black/20 p-2 gap-1.5">
-              <button 
-                onClick={() => setActiveTab('features')}
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs md:text-sm font-bold tracking-wider uppercase transition-all ${
-                  activeTab === 'features' 
-                    ? 'bg-white/10 text-white border border-white/10' 
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
-                }`}
-              >
-                <Layers className="w-4 h-4 text-[#f27d26]" />
-                <span>О сервере</span>
-              </button>
-              
-              <button 
-                onClick={() => setActiveTab('guide')}
-                className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs md:text-sm font-bold tracking-wider uppercase transition-all ${
-                  activeTab === 'guide' 
-                    ? 'bg-white/10 text-white border border-white/10' 
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
-                }`}
-              >
-                <Compass className="w-4 h-4 text-emerald-400" />
-                <span>Как зайти</span>
-              </button>
-            </div>
-
-            {/* Tab Body */}
-            <div className="p-6 md:p-8">
-              
-              {/* Tab: FEATURES */}
-              {activeTab === 'features' && (
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-bold text-white uppercase tracking-wider mb-2">Глобальный Четвертый Сезон</h3>
-                    <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                      Присоединяйтесь к увлекательному приключению на сборке <strong className="text-gray-200">TechEvoDiscovery</strong>. Это высокотехнологичная сборка для Minecraft 1.19.2 (Forge), объединяющая лучшие индустриальные модификации, продуманную квестовую систему, комплексную автоматизацию фабрик и массу элементов для научно-технических исследований.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                        <Flame className="w-4.5 h-4.5 text-[#f27d26]" />
-                      </div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Автоматизация и механика</h4>
-                      <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Полномасштабная автоматизация фабрик с помощью Create, Mekanism, AE2, Thermal Series и множества других современных технологических модов.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                        <Cpu className="w-4.5 h-4.5 text-blue-400" />
-                      </div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Квесты и гайды</h4>
-                      <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Удобная и детальная книга квестов поможет вам освоить все технологии шаг за шагом — от простых механизмов до сложных систем.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 flex flex-col gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
-                        <Clock className="w-4.5 h-4.5 text-green-400" />
-                      </div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-gray-200">Отзывчивый хост</h4>
-                      <p className="text-xs text-gray-400 font-medium leading-relaxed">
-                        Сервер оптимизирован под сложные фабричные строения с качественной трассировкой и стабильной производительностью.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Tab: GUIDE */}
-              {activeTab === 'guide' && (
-                <div className="space-y-6">
-                  <h3 className="text-lg font-bold text-white uppercase tracking-wider">Инструкция по установке игры</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex gap-4 items-start">
-                      <div className="w-6 h-6 rounded-full bg-[#f27d26] text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">1</div>
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-200">Скачать лаунчер и сборку модов</h4>
-                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                          Установите лаунчер с поддержкой Forge (Prism Launcher, CurseForge App, Modrinth или любой любимый лаунчер) или загрузите готовую Forge сборку в боковой панели «Сборка модов & Файлы».
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4 items-start">
-                      <div className="w-6 h-6 rounded-full bg-[#f27d26] text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">2</div>
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-200">Настроить Java</h4>
-                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                          Для стабильной игры выделите не менее <strong className="text-gray-200">6-8 ГБ оперативной памяти</strong> в настройках лаунчера и используйте соответствующую версию <strong className="text-gray-200">Java 17 JRE</strong>.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4 items-start">
-                      <div className="w-6 h-6 rounded-full bg-[#f27d26] text-black flex items-center justify-center text-xs font-black shrink-0 mt-0.5">3</div>
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-200">Добавить сервер</h4>
-                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">
-                          Запустите Minecraft, перейдите в «Сетевая игра» → «По адресу» и вставьте скопированный IP: <code className="text-amber-500 font-mono bg-white/5 px-1.5 py-0.5 rounded text-xs">{primaryIp}</code>.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-4 bg-white/[0.02] border border-white/5 rounded-xl flex flex-wrap gap-4 justify-between items-center">
-                    <span className="text-xs text-gray-300 font-medium">Кнопка быстрого перехода в Discord проекта:</span>
-                    <a 
-                      href="https://discord.gg/3k5enPuY4" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 text-[#f27d26] px-3.5 py-1.5 rounded-lg transition-all"
-                    >
-                      <span>Открыть Discord</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-                </div>
-              )}
-
+              <h3 className="text-sm border-b border-white/5 pb-2 mb-2 font-bold text-white uppercase tracking-wider">Как зайти?</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                1. Скачайте нашу сборку TechEvoDiscovery по кнопке выше.<br/>
+                2. Запустите клиент версии 1.19.2 с установленным Forge.<br/>
+                3. Скопируйте IP <span className="text-white font-mono">veles.imba.land</span> и подключитесь!
+              </p>
             </div>
           </div>
+          <div className="glass-card p-6 rounded-2xl flex items-start gap-4">
+            <Server className="w-6 h-6 text-[#f27d26] shrink-0" />
+            <div>
+              <h3 className="text-sm border-b border-white/5 pb-2 mb-2 font-bold text-white uppercase tracking-wider">Отзывчивый хост</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">Наш сервер расположен на мощном оборудовании, гарантируя стабильный TPS, комфортный пинг и игру без лагов даже при наличии массивных индустриальных заводов.</p>
+            </div>
+          </div>
+        </motion.div>
 
-        </div>
-
-        {/* Right Column: Community & Installations - spans 4 cols */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
+        {/* Community Links */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="glass-card rounded-2xl p-6 md:p-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+             <h2 className="text-lg font-bold text-white tracking-wide uppercase">Сообщество сервера</h2>
+          </div>
           
-          {/* Social Links Card */}
-          <div className="glass-card p-6 rounded-2xl flex flex-col">
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#f27d26] glow-amber mb-6 border-b border-white/10 pb-4">
-              Сообщества и Ссылки
-            </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <div className="space-y-4 flex-1">
-              
-              {/* Discord Link */}
-              <a 
-                href="https://discord.gg/3k5enPuY4" 
-                target="_blank" 
-                rel="noreferrer noopener"
-                className="flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#f27d26]/20 hover:bg-white/[0.06] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center shrink-0">
-                      <MessageSquare className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform" />
-                    </div>
-                    <span className="text-sm font-bold text-gray-100 font-sans">Discord Сервер</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-[#f27d26] transition-colors" />
+            {/* Discord */}
+            <a 
+              href="https://discord.gg/vKnsMhss8a" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#5865F2]/40 hover:bg-[#5865F2]/5 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-lg bg-[#5865F2]/10 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-[#5865F2] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
+                  </svg>
                 </div>
-                <p className="text-[11px] text-gray-400 pl-10">
-                  Техническая поддержка, общение, анонсы и вайт-лист.
-                </p>
-              </a>
-
-              {/* Telegram Link */}
-              <a 
-                href="https://t.me/VelesPlayGame" 
-                target="_blank" 
-                rel="noreferrer noopener"
-                className="flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#f27d26]/20 hover:bg-white/[0.06] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center shrink-0">
-                      <Send className="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform" />
-                    </div>
-                    <span className="text-sm font-bold text-gray-100 font-sans">Telegram Канал</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-[#f27d26] transition-colors" />
-                </div>
-                <p className="text-[11px] text-gray-400 pl-10">
-                  Анонсы, фиксы, важные внутриигровые изменения проекта.
-                </p>
-              </a>
-
-              {/* TikTok Link */}
-              <a 
-                href="https://www.tiktok.com/@_veles.playgame_?_r=1&_t=ZS-96now9pFVMi" 
-                target="_blank" 
-                rel="noreferrer noopener"
-                className="flex flex-col gap-2 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#f27d26]/20 hover:bg-white/[0.06] transition-all group"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center shrink-0">
-                      <Tv className="w-4 h-4 text-pink-400 group-hover:scale-110 transition-transform" />
-                    </div>
-                    <span className="text-sm font-bold text-gray-100 font-sans">TikTok @_veles.playgame_</span>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-[#f27d26] transition-colors" />
-                </div>
-                <p className="text-[11px] text-gray-400 pl-10">
-                  Забавные моменты, вырезки со стримов, хайлайты четвертого сезона.
-                </p>
-              </a>
-
-            </div>
-
-            <div className="mt-6 pt-5 border-t border-white/10">
-              <div className="p-3.5 bg-gradient-to-r from-amber-500/10 to-transparent rounded-xl border border-amber-500/10">
-                <p className="text-[11px] text-amber-500 leading-relaxed font-semibold">
-                  Обязательно присоединяйтесь к нашему дискорд каналу — там публикуются новости об обновлениях и вайт-лист!
-                </p>
+                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
               </div>
-            </div>
-          </div>
-
-          {/* Downloads / Install Info */}
-          <div className="glass-card p-6 rounded-2xl flex flex-col relative overflow-hidden">
-            {/* Minimal pattern */}
-            <div className="absolute right-0 bottom-0 w-24 h-24 bg-white/[0.01] rounded-full blur-xl pointer-events-none"></div>
-            
-            <h3 className="text-xs font-black uppercase tracking-widest text-[#f27d26] pb-4 mb-4 border-b border-white/10">
-              Сборка модов & Файлы
-            </h3>
-
-            <div className="mb-4">
-              <div className="text-base font-bold italic text-white mb-0.5">TechEvoDiscovery [Forge]</div>
-              <div className="text-[11px] text-gray-400 leading-normal">
-                Сезон 04 базируется на сборке TechEvoDiscovery только для Forge. Перейдите на CurseForge, чтобы скачать её.
+              <div>
+                <div className="text-sm font-bold text-gray-200">Discord</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">Новости, общение, тех-поддержка</div>
               </div>
-            </div>
+            </a>
 
-            <div className="space-y-3">
-              {/* CurseForge Link Button */}
-              <a 
-                href="https://www.curseforge.com/minecraft/modpacks/techevdiscovery/files/7629691"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3.5 bg-[#f27d26]/10 hover:bg-[#f27d26]/25 border border-[#f27d26]/30 hover:border-[#f27d26]/60 rounded-xl transition-all group text-left"
-              >
-                <div className="w-8 h-8 rounded-lg bg-orange-600/20 flex items-center justify-center shrink-0">
-                  <Download className="w-4 h-4 text-[#f27d26]" />
+            {/* Telegram */}
+            <a 
+              href="https://t.me/veles_playgame_s" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#229ED9]/40 hover:bg-[#229ED9]/5 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-lg bg-[#229ED9]/10 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-[#229ED9] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
-                  <div className="text-[10px] text-gray-400 truncate font-mono">CurseForge Page — TechEvoDiscovery</div>
-                </div>
-                <ExternalLink className="w-3.5 h-3.5 text-gray-500 group-hover:text-white transition-all shrink-0" />
-              </a>
-            </div>
+                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-200">Telegram</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">Мгновенные уведомления</div>
+              </div>
+            </a>
 
+            {/* YouTube */}
+            <a 
+              href="https://youtube.com/@veles_playgame?si=oty0sDUU230sQAA3" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-red-500/40 hover:bg-red-500/5 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                  <Youtube className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-200">YouTube @veles_playgame</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">Стримы и видеоконтент</div>
+              </div>
+            </a>
+
+            {/* TikTok */}
+            <a 
+              href="https://www.tiktok.com/@_veles.playgame_" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#00f2fe]/40 hover:bg-[#00f2fe]/5 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-10 h-10 rounded-lg bg-[#00f2fe]/10 flex items-center justify-center shrink-0">
+                  <Video className="w-5 h-5 text-[#00f2fe] group-hover:scale-110 transition-transform" />
+                </div>
+                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-gray-200">TikTok</div>
+                <div className="text-[10px] text-gray-500 mt-0.5">Короткие видео</div>
+              </div>
+            </a>
 
           </div>
+        </motion.div>
 
-        </div>
-
-      </main>
-
-      {/* Footer Section */}
-      <footer className="relative z-10 w-full md:max-w-7xl md:mx-auto px-6 sm:px-12 py-8 mt-auto border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="text-center md:text-left">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-gray-500">
-            Разработка и запуск &copy; 2026. Сервер под управлением <span className="text-gray-300 font-medium">Veles PlayGame</span>
+        {/* Footer */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="mt-auto pt-8 text-center"
+        >
+          <div className="inline-block px-4 py-2 rounded-full border border-white/5 bg-white/[0.01]">
+             <p className="text-[11px] text-gray-500 font-mono">
+               Разработка и запуск © 2026. Сервер под управлением <span className="text-gray-400 font-semibold">Veles PlayGame</span>
+             </p>
+          </div>
+          <p className="text-[9px] text-gray-600 mt-3 font-mono opacity-60">
+            Сайт для сообщества TechEvoDiscovery. Все права на Minecraft принадлежат Mojang AB.
           </p>
-          <p className="text-[9px] text-gray-600 mt-1 font-mono">
-            Данный сайт создан для сообщества игроков TechEvoDiscovery. Все права на Minecraft принадлежат Mojang AB.
-          </p>
-        </div>
-        
-        <div className="flex gap-6 text-[10px] uppercase tracking-widest text-gray-500 font-mono">
-          <span className="hover:text-[#f27d26] transition-colors cursor-default font-semibold">Realism</span>
-          <span className="hover:text-[#f27d26] transition-colors cursor-default">Tech-focused</span>
-          <span className="hover:text-blue-400 transition-colors cursor-default">Survival Season 04</span>
-        </div>
-      </footer>
-    </div>
+        </motion.div>
+
+      </div>
+    </main>
   );
 }

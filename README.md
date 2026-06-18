@@ -1,20 +1,50 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# TechEvoDiscovery - Veles PlayGame (Season 4)
 
-# Run and deploy your AI Studio app
+Официальный сайт для сервера Minecraft **TechEvoDiscovery** (Сезон 04) от проекта [Veles PlayGame].
 
-This contains everything you need to run your app locally.
+## 🚀 О проекте
 
-View your app in AI Studio: https://ai.studio/apps/96adcb11-b2d7-4445-b810-ccce96c16e88
+Сайт представляет собой современный лендинг для сообщества игроков сервера, на котором собрана вся необходимая информация для старта:
+- **IP-адреса сервера**: Удобное копирование основного (`veles.imba.land`) и альтернативного цифрового IP-адреса (`213.152.43.48:25572`) в один клик.
+- **Социальные сети**: Быстрые ссылки на официальный Discord, Telegram, TikTok и YouTube канал `veles_playgame`.
+- **Загрузка сборки**: Прямая ссылка на страницу CurseForge для скачивания официального Modpack (версия Minecraft 1.19.2 [Forge], файл `7629691`).
+- **Информация о сезоне**: Краткое описание тематики сборки (индустриальные модификации, комплексная автоматизация, квестовая система).
 
-## Run Locally
+## 🛠️ Технологический стек
 
-**Prerequisites:**  Node.js
+Проект построен с использованием современных веб-технологий:
+- [Next.js 15+](https://nextjs.org/) (App Router)
+- [React](https://reactjs.org/)
+- [Tailwind CSS v4](https://tailwindcss.com/) для стилизации
+- [Lucide React](https://lucide.dev/) для иконок
+- [Framer Motion](https://motion.dev/) (через `motion/react`) для плавных анимаций (опционально/в зависимости от структуры)
 
+## ⚙️ Запуск проекта для разработки
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Убедитесь, что у вас установлен Node.js.
+2. Установите зависимости проекта:
+   ```bash
+   npm install
+   ```
+
+3. Запустите локальный сервер разработки:
+   ```bash
+   npm run dev
+   ```
+
+4. Откройте [http://localhost:3000](http://localhost:3000) в браузере, чтобы увидеть результат.
+
+## 📦 Сборка для продакшена
+
+Для создания оптимизированной Production-сборки:
+
+```bash
+npm run build
+npm run start
+```
+
+## 📄 Правовая информация
+
+Сайт создан исключительно для сообщества игроков TechEvoDiscovery. 
+**Разработка и управление**: Veles PlayGame &copy; 2026.
+*Все права на игру Minecraft и связанные с ней материалы принадлежат Mojang AB.*
