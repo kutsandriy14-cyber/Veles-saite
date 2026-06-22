@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   Server, 
@@ -15,11 +15,104 @@ import {
   Cpu, 
   CheckCircle2,
   Tv,
-  ArrowRight
+  ArrowRight,
+  Users,
+  Wifi,
+  WifiOff,
+  ChevronDown,
+  X,
+  Activity,
+  Info,
+  ChevronsRight
 } from 'lucide-react';
 
 export default function HomePage() {
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
+  const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [serverStatus, setServerStatus] = useState<{
+    online: boolean;
+    playersOnline: number;
+    playersMax: number;
+    version: string;
+    motd: string;
+    latency: number;
+    playersList: string[];
+    loading: boolean;
+    error: boolean;
+  }>({
+    online: false,
+    playersOnline: 0,
+    playersMax: 0,
+    version: '1.21.1',
+    motd: 'Загрузка...',
+    latency: 0,
+    playersList: [],
+    loading: true,
+    error: false
+  });
+
+  useEffect(() => {
+    let active = true;
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch('/api/status');
+        if (!response.ok) throw new Error('Failed to fetch from internal API');
+        const data = await response.json();
+        
+        if (active) {
+          setServerStatus({
+            online: data.online,
+            playersOnline: data.playersOnline,
+            playersMax: data.playersMax,
+            version: data.version || '1.21.1',
+            motd: data.motd || 'Сервер онлайн',
+            latency: data.latency || 45,
+            playersList: data.playersList || [],
+            loading: false,
+            error: !!data.error
+          });
+        }
+      } catch (err) {
+        console.warn('Error fetching from internal status API, attempting public CORS fallback:', err);
+        try {
+          const fallbackRes = await fetch('https://api.mcstatus.io/v2/status/java/veles.imba.land');
+          if (!fallbackRes.ok) throw new Error('Public API backup failed');
+          const data = await fallbackRes.json();
+          if (active) {
+            setServerStatus({
+              online: data.online || false,
+              playersOnline: data.players?.online || 0,
+              playersMax: data.players?.max || 100,
+              version: data.version?.name_clean || '1.21.1',
+              motd: data.motd?.clean || 'Сервер Техно Безумие',
+              latency: 45,
+              playersList: data.players?.list?.map((p: any) => p.name_clean || p.name) || [],
+              loading: false,
+              error: false
+            });
+          }
+        } catch (fallbackErr) {
+          console.error('All server status checks failed:', fallbackErr);
+          if (active) {
+            setServerStatus(prev => ({
+              ...prev,
+              loading: false,
+              error: true
+            }));
+          }
+        }
+      }
+    };
+
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 30000); // refresh every 30 seconds
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -53,18 +146,18 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
-            TECHEVODISCOVERY
+            ТЕХНО БЕЗУМИЕ
           </h1>
 
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <p className="text-sm md:text-base text-gray-300 font-medium max-w-2xl leading-relaxed">
-              Высокотехнологичная сборка для Minecraft 1.19.2, объединяющая лучшие индустриальные модификации, продуманную квестовую систему, комплексную автоматизацию машин и массу элементов для научно-технических исследований.
+              Новая сборка «Техно безумие» для Minecraft 1.21.1. Присоединяйтесь к новому сезону с современными индустриальными модификациями на базе NeoForge!
             </p>
 
             <div className="flex flex-col items-start md:items-end gap-2 text-sm font-mono shrink-0 pt-1">
               <div className="flex items-center gap-2">
                 <span className="text-gray-400">Версия:</span> 
-                <span className="text-white font-semibold flex items-center gap-1.5">1.19.2 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">Forge</span></span>
+                <span className="text-white font-semibold flex items-center gap-1.5">1.21.1 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">NeoForge 228</span></span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gray-400">Формат:</span> 
@@ -98,7 +191,7 @@ export default function HomePage() {
                 </div>
                 <h2 className="text-xl font-bold text-white tracking-wide uppercase">Подключение</h2>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="relative group/btn">
                   <div className="absolute inset-0 bg-blue-500/5 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
@@ -149,15 +242,15 @@ export default function HomePage() {
               </h2>
               
               <div className="mb-8">
-                <div className="text-sm font-bold text-white mb-1">Сборка только для Forge</div>
+                <div className="text-sm font-bold text-white mb-1">Сборка «Техно безумие»</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  Четвертый сезон базируется на модификациях. Скачайте официальный архив сборки с CurseForge для входа на сервер.
+                  Четвертый сезон базируется на новой сборке для NeoForge. Скачайте архив сборки с Google Drive для входа на сервер.
                 </div>
               </div>
 
               <div className="mt-auto">
                 <a 
-                  href="https://www.curseforge.com/minecraft/modpacks/techevdiscovery/download/7629691"
+                  href="https://drive.google.com/file/d/15nfW_Y5rCYnszflhdpq31ejw5EMd_rBy/view?usp=drivesdk"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
@@ -166,7 +259,7 @@ export default function HomePage() {
                     <Download className="w-5 h-5 text-[#f27d26]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с CurseForge</div>
+                    <div className="text-sm font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с Google Drive</div>
                   </div>
                   <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-white transition-all shrink-0" />
                 </a>
@@ -176,29 +269,161 @@ export default function HomePage() {
 
         </div>
 
-        {/* Feature Highlights */}
+        {/* Feature Highlights - Sliding Expandable Tabs */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
+          className="mb-12 space-y-4"
         >
-          <div className="glass-card p-6 rounded-2xl flex items-start gap-4">
-            <Tv className="w-6 h-6 text-[#f27d26] shrink-0" />
-            <div>
-              <h3 className="text-sm border-b border-white/5 pb-2 mb-2 font-bold text-white uppercase tracking-wider">Как зайти?</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">
-                1. Скачайте нашу сборку TechEvoDiscovery по кнопке выше.<br/>
-                2. Запустите клиент версии 1.19.2 с установленным Forge.<br/>
-                3. Скопируйте IP <span className="text-white font-mono">veles.imba.land</span> и подключитесь!
-              </p>
-            </div>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2.5 h-6 bg-[#f27d26] rounded-full shadow-[0_0_15px_rgba(242,125,38,0.4)]" />
+            <h2 className="text-xl font-black text-white tracking-wide uppercase">Информация о сервере</h2>
           </div>
-          <div className="glass-card p-6 rounded-2xl flex items-start gap-4">
-            <Server className="w-6 h-6 text-[#f27d26] shrink-0" />
-            <div>
-              <h3 className="text-sm border-b border-white/5 pb-2 mb-2 font-bold text-white uppercase tracking-wider">Отзывчивый хост</h3>
-              <p className="text-xs text-gray-400 leading-relaxed">Наш сервер расположен на мощном оборудовании, гарантируя стабильный TPS, комфортный пинг и игру без лагов даже при наличии массивных индустриальных заводов.</p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left Column: Tab Selectors */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {[
+                { id: 0, title: "Как зайти на сервер?", icon: Tv, desc: "Пошаговая инструкция для подключения к сборке" },
+                { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
+                { id: 2, title: "Индустриальная сборка", icon: Cpu, desc: "Подробности о сборке «Техно безумие»" }
+              ].map((tab) => {
+                const IconComponent = tab.icon;
+                const isActive = activeAccordion === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveAccordion(isActive ? null : tab.id)}
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-center justify-between group relative overflow-hidden ${
+                      isActive 
+                        ? "bg-[#f27d26]/10 border-[#f27d26]/40 shadow-[0_0_20px_rgba(242,125,38,0.05)]" 
+                        : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
+                    }`}
+                  >
+                    <div className="flex items-center gap-4 relative z-10">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                        isActive ? "bg-[#f27d26]/20 text-[#f27d26]" : "bg-white/5 text-gray-400 group-hover:text-white"
+                      }`}>
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h4 className={`text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${
+                          isActive ? "text-[#f27d26]" : "text-white"
+                        }`}>
+                          {tab.title}
+                        </h4>
+                        <p className="text-[11px] text-gray-400 mt-0.5 font-sans line-clamp-1">{tab.desc}</p>
+                      </div>
+                    </div>
+                    
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 shrink-0 ${
+                      isActive ? "text-[#f27d26] rotate-180" : "text-gray-500 group-hover:text-gray-300"
+                    }`} />
+
+                    {/* Left glowing neon border line for active tab */}
+                    {isActive && (
+                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#f27d26]" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right Column: Sliding Content Panel */}
+            <div className="lg:col-span-7 flex">
+              <div className="w-full glass-card border-white/5 bg-gradient-to-br from-white/[0.01] to-transparent p-6 rounded-2xl flex flex-col justify-between min-h-[220px] relative overflow-hidden">
+                <div className="absolute top-0 right-0 -m-16 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 -m-16 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 h-full flex flex-col justify-center">
+                  {activeAccordion === 0 && (
+                    <motion.div
+                      key="how-to-join"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                        <Tv className="w-5 h-5 text-[#f27d26]" />
+                        <span>Как зайти на сервер?</span>
+                      </h3>
+                      <div className="space-y-2.5 text-xs text-gray-300 leading-relaxed">
+                        <div className="flex gap-3">
+                          <span className="text-[#f27d26] font-mono font-bold">1.</span>
+                          <p>Нажмите оранжевую кнопку <span className="text-white font-semibold">«Скачать с Google Drive»</span> выше и скачайте архив сборки.</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <span className="text-[#f27d26] font-mono font-bold">2.</span>
+                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-white font-semibold">1.21.1</span> с ядром <span className="text-[#f27d26] font-semibold">NeoForge 228</span>.</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <span className="text-[#f27d26] font-mono font-bold">3.</span>
+                          <p>Перенесите все файлы из скачанного архива в папку вашего нового клиента (раздел <span className="text-white font-semibold">mods</span> и <span className="text-white font-semibold">config</span>).</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <span className="text-[#f27d26] font-mono font-bold">4.</span>
+                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">veles.imba.land</span> из блока «Подключение», запускайте игру и подключайтесь к нам!</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeAccordion === 1 && (
+                    <motion.div
+                      key="responsive-host"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                        <Server className="w-5 h-5 text-[#f27d26]" />
+                        <span>Наш мощный и стабильный хостинг</span>
+                      </h3>
+                      <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
+                        <p>
+                          Мир сервера развернут на флагманском процессоре <span className="text-white font-bold">AMD Ryzen 9</span> с высокоскоростной серверной оперативной памятью DDR5 и сверхбыстрыми игровыми накопителями <span className="text-white font-bold">PCI-E NVMe SSD</span>.
+                        </p>
+                        <p>
+                          Благодаря этому, сервер стабильно удерживает <span className="text-emerald-400 font-bold">TPS 20.0</span> под любой нагрузкой. Карта не виснет, пинг минимальный, а ресурсы чанков прогружаются молниеносно, позволяя строить комплексные логистические цепочки и автоматизированные заводы без ущерба для вашего комфорта!
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeAccordion === 2 && (
+                    <motion.div
+                      key="modpack-info"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-4"
+                    >
+                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                        <Cpu className="w-5 h-5 text-[#f27d26]" />
+                        <span>Индустриальная сборка «Техно безумие»</span>
+                      </h3>
+                      <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
+                        <p>
+                          <span className="text-white font-bold">«Техно безумие»</span> на версии <span className="text-[#f27d26] font-semibold">Minecraft 1.21.1</span> — это сбалансированный индустриальный пак нового поколения, объединяющий лучшую автоматизацию, современную электронику, генерацию энергии и инженерию на ядре <span className="text-white font-semibold">NeoForge</span>.
+                        </p>
+                        <p>
+                          Мы исключили лишние, нагружающие клиент модификации, чтобы игра оставалась плавной на любых ПК, параллельно предоставив игрокам невероятный простор для создания технологических фабрик будущего.
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {activeAccordion === null && (
+                    <div className="text-center py-8 text-gray-500 font-sans animate-pulse">
+                      <ChevronDown className="w-8 h-8 text-white/20 mx-auto mb-2 animate-bounce" />
+                      Выберите вкладку слева, чтобы открыть подробную информацию
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -306,7 +531,7 @@ export default function HomePage() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="mt-auto pt-8 text-center"
         >
-          <div className="inline-block px-4 py-2 rounded-full border border-white/5 bg-white/[0.01]">
+          <div className="inline-block px-4 py-2 rounded-full border border-[#f27d26]/10 bg-[#f27d26]/[0.02]">
              <p className="text-[11px] text-gray-500 font-mono">
                Разработка и запуск © 2026. Сервер под управлением <span className="text-gray-400 font-semibold">Veles PlayGame</span>
              </p>
