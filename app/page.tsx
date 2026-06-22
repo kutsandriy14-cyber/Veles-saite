@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Server, 
@@ -16,103 +16,12 @@ import {
   CheckCircle2,
   Tv,
   ArrowRight,
-  Users,
-  Wifi,
-  WifiOff,
-  ChevronDown,
-  X,
-  Activity,
-  Info,
-  ChevronsRight
+  ChevronDown
 } from 'lucide-react';
 
 export default function HomePage() {
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
   const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [serverStatus, setServerStatus] = useState<{
-    online: boolean;
-    playersOnline: number;
-    playersMax: number;
-    version: string;
-    motd: string;
-    latency: number;
-    playersList: string[];
-    loading: boolean;
-    error: boolean;
-  }>({
-    online: false,
-    playersOnline: 0,
-    playersMax: 0,
-    version: '1.21.1',
-    motd: 'Загрузка...',
-    latency: 0,
-    playersList: [],
-    loading: true,
-    error: false
-  });
-
-  useEffect(() => {
-    let active = true;
-    const fetchStatus = async () => {
-      try {
-        const response = await fetch('/api/status');
-        if (!response.ok) throw new Error('Failed to fetch from internal API');
-        const data = await response.json();
-        
-        if (active) {
-          setServerStatus({
-            online: data.online,
-            playersOnline: data.playersOnline,
-            playersMax: data.playersMax,
-            version: data.version || '1.21.1',
-            motd: data.motd || 'Сервер онлайн',
-            latency: data.latency || 45,
-            playersList: data.playersList || [],
-            loading: false,
-            error: !!data.error
-          });
-        }
-      } catch (err) {
-        console.warn('Error fetching from internal status API, attempting public CORS fallback:', err);
-        try {
-          const fallbackRes = await fetch('https://api.mcstatus.io/v2/status/java/veles.imba.land');
-          if (!fallbackRes.ok) throw new Error('Public API backup failed');
-          const data = await fallbackRes.json();
-          if (active) {
-            setServerStatus({
-              online: data.online || false,
-              playersOnline: data.players?.online || 0,
-              playersMax: data.players?.max || 100,
-              version: data.version?.name_clean || '1.21.1',
-              motd: data.motd?.clean || 'Сервер Техно Безумие',
-              latency: 45,
-              playersList: data.players?.list?.map((p: any) => p.name_clean || p.name) || [],
-              loading: false,
-              error: false
-            });
-          }
-        } catch (fallbackErr) {
-          console.error('All server status checks failed:', fallbackErr);
-          if (active) {
-            setServerStatus(prev => ({
-              ...prev,
-              loading: false,
-              error: true
-            }));
-          }
-        }
-      }
-    };
-
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 30000); // refresh every 30 seconds
-
-    return () => {
-      active = false;
-      clearInterval(interval);
-    };
-  }, []);
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -141,7 +50,7 @@ export default function HomePage() {
           <div className="mb-6">
             <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#f27d26]/10 border border-[#f27d26]/20 rounded-full">
               <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
-              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Season 04 • Live</span>
+              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Season 05 • Live</span>
             </span>
           </div>
 
@@ -244,7 +153,7 @@ export default function HomePage() {
               <div className="mb-8">
                 <div className="text-sm font-bold text-white mb-1">Сборка «Техно безумие»</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  Четвертый сезон базируется на новой сборке для NeoForge. Скачайте архив сборки с Google Drive для входа на сервер.
+                  Пятый сезон базируется на новой сборке для NeoForge. Скачайте архив сборки с Google Drive для входа на сервер.
                 </div>
               </div>
 
@@ -360,7 +269,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
-                          <p>Перенесите все файлы из скачанного архива в папку вашего нового клиента (раздел <span className="text-white font-semibold">mods</span> и <span className="text-white font-semibold">config</span>).</p>
+                          <p>Перенесите все файлы из скачанного архива в папку <span className="text-white font-semibold">mods</span> вашего нового клиента (в этой сборке папка с конфигами отсутствует и не требуется, всё настроено внутри самих модов).</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">4.</span>

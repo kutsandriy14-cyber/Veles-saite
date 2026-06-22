@@ -1,6 +1,6 @@
-# TechEvoDiscovery - Veles PlayGame (Season 4)
+# TechEvoDiscovery - Veles PlayGame (Season 5)
 
-Официальный сайт для сервера Minecraft **TechEvoDiscovery** (Сезон 04) от проекта [Veles PlayGame].
+Официальный сайт для сервера Minecraft **TechEvoDiscovery** (Сезон 05) от проекта [Veles PlayGame].
 
 ## 🚀 О проекте
 
