@@ -63,16 +63,19 @@ export default function HomePage() {
               Официальная сборка «The Decursio Project - Expert» для Minecraft 1.16.5. Присоединяйтесь к новому сезону с уникальной системой поэтапного развития, автоматизацией и магией!
             </p>
 
-            <div className="flex flex-col items-start md:items-end gap-2 text-sm font-mono shrink-0 pt-1">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400">Версия:</span> 
-                <span className="text-white font-semibold flex items-center gap-1.5">1.16.5 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">Forge 36.2.34</span></span>
+            <div className="flex flex-col items-start md:items-end gap-3 shrink-0 pt-1">
+              <div className="flex flex-col md:items-end">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.16.5</span>
+                  <span className="text-sm bg-[#f27d26]/10 text-[#f27d26] border border-[#f27d26]/30 px-2.5 py-0.5 rounded-lg font-mono font-bold">v36.2.34</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-sm font-mono">
                 <span className="text-gray-400">Формат:</span> 
                 <span className="text-white font-bold">Выживание / Квесты</span>
               </div>
-              <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-xs font-mono">
                 <span className="text-gray-500">Администратор:</span> 
                 <span className="text-gray-300">Veles PlayGame</span>
               </div>
@@ -265,7 +268,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-white font-semibold">1.16.5</span> с ядром <span className="text-[#f27d26] font-semibold">Forge 36.2.34</span>.</p>
+                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.16.5</span> (с версией ядра <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">36.2.34</span>).</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
@@ -316,7 +319,7 @@ export default function HomePage() {
                       </h3>
                       <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
                         <p>
-                          <span className="text-white font-bold">The Decursio Project - Expert</span> — это масштабный и проработанный экспертный пак на версии <span className="text-[#f27d26] font-semibold">Minecraft 1.16.5</span>. Основной упор сделан на постепенную прогрессию (по типу SevTech: Ages), где новые технологии и ресурсы открываются строго по ходу выполнения квестов.
+                          <span className="text-white font-bold">The Decursio Project - Expert</span> — это масштабный и проработанный экспертный пак на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.16.5 (v36.2.34)</span>. Основной упор сделан на постепенную прогрессию (по типу SevTech: Ages), где новые технологии и ресурсы открываются строго по ходу выполнения квестов.
                         </p>
                         <p>
                           Сборка предлагает <span className="text-white font-bold">5 уникальных технологических и магических эпох (Ages)</span>, которые полностью меняют привычный геймплей:
