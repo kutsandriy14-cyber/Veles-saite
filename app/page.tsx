@@ -55,18 +55,18 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
-            ТЕХНО БЕЗУМИЕ
+            DECURSIO PROJECT
           </h1>
 
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <p className="text-sm md:text-base text-gray-300 font-medium max-w-2xl leading-relaxed">
-              Новая сборка «Техно безумие» для Minecraft 1.21.1. Присоединяйтесь к новому сезону с современными индустриальными модификациями на базе NeoForge!
+              Официальная сборка «The Decursio Project - Expert» для Minecraft 1.16.5. Присоединяйтесь к новому сезону с уникальной системой поэтапного развития, автоматизацией и магией!
             </p>
 
             <div className="flex flex-col items-start md:items-end gap-2 text-sm font-mono shrink-0 pt-1">
               <div className="flex items-center gap-2">
                 <span className="text-gray-400">Версия:</span> 
-                <span className="text-white font-semibold flex items-center gap-1.5">1.21.1 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">NeoForge 228</span></span>
+                <span className="text-white font-semibold flex items-center gap-1.5">1.16.5 <span className="text-[#f27d26] text-[10px] border border-[#f27d26]/30 px-1 py-0.5 rounded leading-none">Forge 36.2.34</span></span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-gray-400">Формат:</span> 
@@ -151,15 +151,15 @@ export default function HomePage() {
               </h2>
               
               <div className="mb-8">
-                <div className="text-sm font-bold text-white mb-1">Сборка «Техно безумие»</div>
+                <div className="text-sm font-bold text-white mb-1">Decursio Project Expert</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  Пятый сезон базируется на новой сборке для NeoForge. Скачайте архив сборки с Google Drive для входа на сервер.
+                  Пятый сезон базируется на экспертной сборке с поэтапной квестовой системой. Скачайте архив сборки с Google Drive для входа на сервер.
                 </div>
               </div>
 
               <div className="mt-auto">
                 <a 
-                  href="https://drive.google.com/file/d/187N7jm68O-mtAkI3zCAcuBJOGYM5UVIY/view?usp=drivesdk"
+                  href="https://drive.google.com/file/d/1Edkw9RSpKuku9uG6Jk2bYnNy-gkobLdr/view?usp=drivesdk"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
@@ -196,7 +196,7 @@ export default function HomePage() {
               {[
                 { id: 0, title: "Как зайти на сервер?", icon: Tv, desc: "Пошаговая инструкция для подключения к сборке" },
                 { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
-                { id: 2, title: "Индустриальная сборка", icon: Cpu, desc: "Подробности о сборке «Техно безумие»" }
+                { id: 2, title: "Сборка Decursio Expert", icon: Cpu, desc: "Эпохи развития и особенности сборки" }
               ].map((tab) => {
                 const IconComponent = tab.icon;
                 const isActive = activeAccordion === tab.id;
@@ -265,11 +265,11 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-white font-semibold">1.21.1</span> с ядром <span className="text-[#f27d26] font-semibold">NeoForge 228</span>.</p>
+                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-white font-semibold">1.16.5</span> с ядром <span className="text-[#f27d26] font-semibold">Forge 36.2.34</span>.</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
-                          <p>Перенесите все файлы из скачанного архива в папку <span className="text-white font-semibold">mods</span> вашего нового клиента (в этой сборке папка с конфигами отсутствует и не требуется, всё настроено внутри самих модов).</p>
+                          <p>Распакуйте скачанный ZIP-архив и перенесите все папки (такие как <span className="text-white font-semibold">mods</span>, <span className="text-white font-semibold">config</span> и другие) напрямую в корневую папку вашего игрового клиента/инстанса Minecraft.</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">4.</span>
@@ -312,14 +312,24 @@ export default function HomePage() {
                     >
                       <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
                         <Cpu className="w-5 h-5 text-[#f27d26]" />
-                        <span>Индустриальная сборка «Техно безумие»</span>
+                        <span>The Decursio Project - Expert Edition</span>
                       </h3>
                       <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
                         <p>
-                          <span className="text-white font-bold">«Техно безумие»</span> на версии <span className="text-[#f27d26] font-semibold">Minecraft 1.21.1</span> — это сбалансированный индустриальный пак нового поколения, объединяющий лучшую автоматизацию, современную электронику, генерацию энергии и инженерию на ядре <span className="text-white font-semibold">NeoForge</span>.
+                          <span className="text-white font-bold">The Decursio Project - Expert</span> — это масштабный и проработанный экспертный пак на версии <span className="text-[#f27d26] font-semibold">Minecraft 1.16.5</span>. Основной упор сделан на постепенную прогрессию (по типу SevTech: Ages), где новые технологии и ресурсы открываются строго по ходу выполнения квестов.
                         </p>
                         <p>
-                          Мы исключили лишние, нагружающие клиент модификации, чтобы игра оставалась плавной на любых ПК, параллельно предоставив игрокам невероятный простор для создания технологических фабрик будущего.
+                          Сборка предлагает <span className="text-white font-bold">5 уникальных технологических и магических эпох (Ages)</span>, которые полностью меняют привычный геймплей:
+                        </p>
+                        <ul className="space-y-1.5 pl-4 list-disc text-gray-400">
+                          <li><span className="text-white font-semibold">Age 1 (Origins & Magic)</span> — выживание с примитивными инструментами, основы Blood Magic и Occultism.</li>
+                          <li><span className="text-white font-semibold">Age 2 (Steam & Create)</span> — эра кинетической энергии и первой автоматизации с модом Create.</li>
+                          <li><span className="text-white font-semibold">Age 3 (Immersive Industry)</span> — электричество, тяжелое машиностроение Immersive Engineering и Astral Sorcery.</li>
+                          <li><span className="text-white font-semibold">Age 4 (Advanced Tech)</span> — цифровые логистические системы Applied Energistics 2 и механизмы Mekanism.</li>
+                          <li><span className="text-white font-semibold">Age 5 (Creative Supremacy)</span> — получение креативных предметов, безграничная энергия и полная автоматизация.</li>
+                        </ul>
+                        <p>
+                          Рецепты абсолютно всех модов тесно переплетены между собой. Чтобы продвинуться в технологиях, вам придется изучать тайную магию, а для создания мощных магических артефактов потребуются современные высокотехнологичные фабрики. Более 1500+ квестов помогут вам пройти этот сложный, но увлекательный путь!
                         </p>
                       </div>
                     </motion.div>

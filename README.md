@@ -1,6 +1,6 @@
-# TechEvoDiscovery - Veles PlayGame (Season 5)
+# The Decursio Project Expert - Veles PlayGame (Season 5)
 
-Официальный сайт для сервера Minecraft **TechEvoDiscovery** (Сезон 05) от проекта [Veles PlayGame].
+Официальный сайт для сервера Minecraft **The Decursio Project Expert** (Сезон 05) от проекта [Veles PlayGame].
 
 ## 🚀 О проекте
 

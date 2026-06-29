@@ -2,8 +2,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'TechEvoDiscovery Veles PlayGame - Season 5',
-  description: 'Официальный игровой сервер Minecraft TechEvoDiscovery Сезон 05 от Veles PlayGame.',
+  title: 'Decursio Project Expert Veles PlayGame - Season 5',
+  description: 'Официальный игровой сервер Minecraft The Decursio Project Expert Сезон 05 от Veles PlayGame.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
