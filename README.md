@@ -45,6 +45,6 @@ npm run start
 
 ## 📄 Правовая информация
 
-Сайт создан исключительно для сообщества игроков TechEvoDiscovery. 
+Сайт создан исключительно для сообщества игроков The Decursio Project Expert (ранее TechEvoDiscovery). 
 **Разработка и управление**: Veles PlayGame &copy; 2026.
 *Все права на игру Minecraft и связанные с ней материалы принадлежат Mojang AB.*

@@ -16,7 +16,8 @@ import {
   CheckCircle2,
   Tv,
   ArrowRight,
-  ChevronDown
+  ChevronDown,
+  Users
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -58,11 +59,7 @@ export default function HomePage() {
             DECURSIO PROJECT
           </h1>
 
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <p className="text-sm md:text-base text-gray-300 font-medium max-w-2xl leading-relaxed">
-              Официальная сборка «The Decursio Project - Expert» для Minecraft 1.16.5. Присоединяйтесь к новому сезону с уникальной системой поэтапного развития, автоматизацией и магией!
-            </p>
-
+          <div className="flex flex-col md:flex-row md:items-start justify-end gap-6">
             <div className="flex flex-col items-start md:items-end gap-3 shrink-0 pt-1">
               <div className="flex flex-col md:items-end">
                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
@@ -355,93 +352,103 @@ export default function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="glass-card rounded-2xl p-6 md:p-8"
+          className="relative rounded-3xl p-6 md:p-10 border border-white/10 overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-6">
-             <h2 className="text-lg font-bold text-white tracking-wide uppercase">Сообщество сервера</h2>
+          {/* Background gradient for the community section */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-[#f27d26]/[0.05] -z-10" />
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+          <div className="flex flex-col items-center justify-center mb-10 text-center">
+             <div className="inline-flex items-center justify-center p-3 bg-white/5 rounded-2xl mb-5 ring-1 ring-white/10 shadow-lg shadow-black/20">
+               <Users className="w-6 h-6 text-[#f27d26]" />
+             </div>
+             <h2 className="text-2xl md:text-3xl font-black text-white tracking-wide uppercase mb-3">Сообщество сервера</h2>
+             <p className="text-sm md:text-base text-gray-400 max-w-lg mx-auto leading-relaxed">
+               Присоединяйтесь к нашему дружному комьюнити! Мы всегда рады новым игрокам, помогаем с модами и вместе покоряем эпохи развития.
+             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             
             {/* Discord */}
             <a 
-              href="https://discord.gg/vKnsMhss8a" 
+              href="https://discord.gg/cd2utAp2n" 
               target="_blank" 
               rel="noreferrer noopener"
-              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#5865F2]/40 hover:bg-[#5865F2]/5 transition-all group"
+              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] hover:-translate-y-1 transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-[#5865F2]/10 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-[#5865F2] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+                <div className="w-12 h-12 rounded-xl bg-[#5865F2]/20 flex items-center justify-center shrink-0 ring-1 ring-[#5865F2]/30 group-hover:ring-[#5865F2]/60 transition-all">
+                  <svg className="w-6 h-6 text-[#5865F2] group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
-                  </svg>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                </svg>
               </div>
-              <div>
-                <div className="text-sm font-bold text-gray-200">Discord</div>
-                <div className="text-[10px] text-gray-500 mt-0.5">Новости, общение, тех-поддержка</div>
-              </div>
-            </a>
+              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </div>
+            <div>
+              <div className="text-base font-bold text-gray-200 mb-1">Discord</div>
+              <div className="text-xs text-gray-400">Общение и тех-поддержка</div>
+            </div>
+          </a>
 
-            {/* Telegram */}
-            <a 
-              href="https://t.me/veles_playgame_s" 
-              target="_blank" 
-              rel="noreferrer noopener"
-              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#229ED9]/40 hover:bg-[#229ED9]/5 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-[#229ED9]/10 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-[#229ED9] group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                  </svg>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+          {/* Telegram */}
+          <a 
+            href="https://t.me/veles_playgame_s" 
+            target="_blank" 
+            rel="noreferrer noopener"
+            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#229ED9]/50 hover:bg-[#229ED9]/10 hover:shadow-[0_0_20px_rgba(34,158,217,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-12 h-12 rounded-xl bg-[#229ED9]/20 flex items-center justify-center shrink-0 ring-1 ring-[#229ED9]/30 group-hover:ring-[#229ED9]/60 transition-all">
+                <svg className="w-6 h-6 text-[#229ED9] group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
               </div>
-              <div>
-                <div className="text-sm font-bold text-gray-200">Telegram</div>
-                <div className="text-[10px] text-gray-500 mt-0.5">Мгновенные уведомления</div>
-              </div>
-            </a>
+              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </div>
+            <div>
+              <div className="text-base font-bold text-gray-200 mb-1">Telegram</div>
+              <div className="text-xs text-gray-400">Мгновенные уведомления</div>
+            </div>
+          </a>
 
-            {/* YouTube */}
-            <a 
-              href="https://youtube.com/@veles_playgame?si=oty0sDUU230sQAA3" 
-              target="_blank" 
-              rel="noreferrer noopener"
-              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-red-500/40 hover:bg-red-500/5 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
-                  <Youtube className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+          {/* YouTube */}
+          <a 
+            href="https://youtube.com/@veles_playgame?si=oty0sDUU230sQAA3" 
+            target="_blank" 
+            rel="noreferrer noopener"
+            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0 ring-1 ring-red-500/30 group-hover:ring-red-500/60 transition-all">
+                <Youtube className="w-6 h-6 text-red-500 group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <div>
-                <div className="text-sm font-bold text-gray-200">YouTube @veles_playgame</div>
-                <div className="text-[10px] text-gray-500 mt-0.5">Стримы и видеоконтент</div>
-              </div>
-            </a>
+              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </div>
+            <div>
+              <div className="text-base font-bold text-gray-200 mb-1">YouTube</div>
+              <div className="text-xs text-gray-400">Стримы и видеоконтент</div>
+            </div>
+          </a>
 
-            {/* TikTok */}
-            <a 
-              href="https://www.tiktok.com/@_veles.playgame_" 
-              target="_blank" 
-              rel="noreferrer noopener"
-              className="flex flex-col gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-[#00f2fe]/40 hover:bg-[#00f2fe]/5 transition-all group"
-            >
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-lg bg-[#00f2fe]/10 flex items-center justify-center shrink-0">
-                  <Video className="w-5 h-5 text-[#00f2fe] group-hover:scale-110 transition-transform" />
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+          {/* TikTok */}
+          <a 
+            href="https://www.tiktok.com/@_veles.playgame_" 
+            target="_blank" 
+            rel="noreferrer noopener"
+            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#00f2fe]/50 hover:bg-[#00f2fe]/10 hover:shadow-[0_0_20px_rgba(0,242,254,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-between">
+              <div className="w-12 h-12 rounded-xl bg-[#00f2fe]/20 flex items-center justify-center shrink-0 ring-1 ring-[#00f2fe]/30 group-hover:ring-[#00f2fe]/60 transition-all">
+                <Video className="w-6 h-6 text-[#00f2fe] group-hover:scale-110 transition-transform duration-300" />
               </div>
-              <div>
-                <div className="text-sm font-bold text-gray-200">TikTok</div>
-                <div className="text-[10px] text-gray-500 mt-0.5">Короткие видео</div>
-              </div>
-            </a>
+              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+            </div>
+            <div>
+              <div className="text-base font-bold text-gray-200 mb-1">TikTok</div>
+              <div className="text-xs text-gray-400">Короткие видео</div>
+            </div>
+          </a>
 
           </div>
         </motion.div>
