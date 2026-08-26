@@ -51,7 +51,7 @@ export default function HomePage() {
           <div className="mb-6">
             <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#f27d26]/10 border border-[#f27d26]/20 rounded-full">
               <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
-              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Season 05 • Live</span>
+              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Неофициальный сервер • Онлайн</span>
             </span>
           </div>
 
@@ -137,7 +137,7 @@ export default function HomePage() {
               <div className="mb-8">
                 <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern (v0.12.7)</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  Пятый сезон базируется на хардкорной технологической сборке TerraFirmaGreg: Modern. Скачайте архив сборки с Google Drive для входа на сервер.
+                  Неофициальный сервер на базе хардкорной технологической сборки TerraFirmaGreg: Modern. Скачайте архив сборки с Google Drive для входа на сервер.
                 </div>
               </div>
 

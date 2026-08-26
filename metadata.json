@@ -1,6 +1,6 @@
 {
   "name": "TerraFirmaGregModern",
-  "description": "Сайт майнкрафт сервера TerraFirmaGreg: Modern (Сезон 5) от Veles PlayGame. Ссылки на сборку, Discord, Telegram, TikTok и IP адреса сервера.",
+  "description": "Сайт майнкрафт сервера TerraFirmaGreg: Modern от сообщества Veles PlayGame. Ссылки на сборку, Discord, Telegram, TikTok и IP адрес сервера.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
