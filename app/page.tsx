@@ -56,7 +56,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
-            DECURSIO PROJECT
+            TERRAFIRMAGREG
           </h1>
 
           <div className="flex flex-col md:flex-row md:items-start justify-end gap-6">
@@ -64,8 +64,8 @@ export default function HomePage() {
               <div className="flex flex-col md:items-end">
                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.16.5</span>
-                  <span className="text-sm bg-[#f27d26]/10 text-[#f27d26] border border-[#f27d26]/30 px-2.5 py-0.5 rounded-lg font-mono font-bold">v36.2.34</span>
+                  <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.20.1</span>
+                  <span className="text-sm bg-[#f27d26]/10 text-[#f27d26] border border-[#f27d26]/30 px-2.5 py-0.5 rounded-lg font-mono font-bold">v0.12.7</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-sm font-mono">
@@ -103,33 +103,17 @@ export default function HomePage() {
 
               <div className="space-y-4">
                 <div className="relative group/btn">
-                  <div className="absolute inset-0 bg-blue-500/5 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
-                  <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2 pl-1 relative">Основной IP</div>
+                  <div className="absolute inset-0 bg-blue-500/10 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
+                  <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-2 pl-1 relative">IP Адрес сервера</div>
                   <button 
-                    onClick={() => handleCopy('veles.imba.land')}
-                    className="w-full flex items-center justify-between p-4 bg-black/40 hover:bg-black/60 border border-blue-500/10 hover:border-blue-500/30 rounded-xl transition-all relative"
+                    onClick={() => handleCopy('213.152.43.53:25589')}
+                    className="w-full flex items-center justify-between p-4 bg-black/50 hover:bg-black/70 border border-blue-500/20 hover:border-blue-500/40 rounded-xl transition-all relative"
                   >
-                    <span className="font-mono text-lg text-white group-hover/btn:text-blue-400 transition-colors">veles.imba.land</span>
-                    {copiedIp === 'veles.imba.land' ? (
-                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
+                    <span className="font-mono text-lg md:text-xl text-white font-bold tracking-wide group-hover/btn:text-blue-400 transition-colors">213.152.43.53:25589</span>
+                    {copiedIp === '213.152.43.53:25589' ? (
+                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/20"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
                     ) : (
-                      <span className="flex items-center gap-2 text-blue-500/60 group-hover/btn:text-blue-400 transition-colors text-xs font-bold uppercase tracking-wider"><Copy className="w-4 h-4" /> Копировать</span>
-                    )}
-                  </button>
-                </div>
-
-                <div className="relative group/btn">
-                  <div className="absolute inset-0 bg-indigo-500/5 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
-                  <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2 pl-1 relative">Цифровой IP</div>
-                  <button 
-                    onClick={() => handleCopy('213.152.43.48:25572')}
-                    className="w-full flex items-center justify-between p-4 bg-black/40 hover:bg-black/60 border border-indigo-500/10 hover:border-indigo-500/30 rounded-xl transition-all relative"
-                  >
-                    <span className="font-mono text-base text-gray-300 group-hover/btn:text-indigo-400 transition-colors">213.152.43.48:25572</span>
-                    {copiedIp === '213.152.43.48:25572' ? (
-                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
-                    ) : (
-                      <span className="flex items-center gap-2 text-indigo-500/60 group-hover/btn:text-indigo-400 transition-colors text-xs font-bold uppercase tracking-wider"><Copy className="w-4 h-4" /> Копировать</span>
+                      <span className="flex items-center gap-2 text-blue-400 group-hover/btn:text-blue-300 transition-colors text-xs font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20"><Copy className="w-4 h-4" /> Копировать</span>
                     )}
                   </button>
                 </div>
@@ -151,15 +135,15 @@ export default function HomePage() {
               </h2>
               
               <div className="mb-8">
-                <div className="text-sm font-bold text-white mb-1">Decursio Project Expert</div>
+                <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern (v0.12.7)</div>
                 <div className="text-xs text-gray-400 leading-relaxed">
-                  Пятый сезон базируется на экспертной сборке с поэтапной квестовой системой. Скачайте архив сборки с Google Drive для входа на сервер.
+                  Пятый сезон базируется на хардкорной технологической сборке TerraFirmaGreg: Modern. Скачайте архив сборки с Google Drive для входа на сервер.
                 </div>
               </div>
 
               <div className="mt-auto">
                 <a 
-                  href="https://drive.google.com/file/d/1Edkw9RSpKuku9uG6Jk2bYnNy-gkobLdr/view?usp=drivesdk"
+                  href="https://drive.google.com/file/d/13nTl_U7cAusloN8O2uxtTzTJAiGwGadW/view?usp=drivesdk"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
@@ -196,7 +180,7 @@ export default function HomePage() {
               {[
                 { id: 0, title: "Как зайти на сервер?", icon: Tv, desc: "Пошаговая инструкция для подключения к сборке" },
                 { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
-                { id: 2, title: "Сборка Decursio Expert", icon: Cpu, desc: "Эпохи развития и особенности сборки" }
+                { id: 2, title: "Сборка TerraFirmaGreg Modern", icon: Cpu, desc: "Реалистичная геология TFC и технологии GregTech" }
               ].map((tab) => {
                 const IconComponent = tab.icon;
                 const isActive = activeAccordion === tab.id;
@@ -265,7 +249,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.16.5</span> (с версией ядра <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">36.2.34</span>).</p>
+                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern v0.12.7</span>).</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
@@ -273,7 +257,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">4.</span>
-                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">veles.imba.land</span> из блока «Подключение», запускайте игру и подключайтесь к нам!</p>
+                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">213.152.43.53:25589</span> из блока «Подключение», запускайте игру и подключайтесь к нам!</p>
                         </div>
                       </div>
                     </motion.div>
@@ -312,24 +296,24 @@ export default function HomePage() {
                     >
                       <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
                         <Cpu className="w-5 h-5 text-[#f27d26]" />
-                        <span>The Decursio Project - Expert Edition</span>
+                        <span>TerraFirmaGreg: Modern — Edition v0.12.7</span>
                       </h3>
                       <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
                         <p>
-                          <span className="text-white font-bold">The Decursio Project - Expert</span> — это масштабный и проработанный экспертный пак на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.16.5 (v36.2.34)</span>. Основной упор сделан на постепенную прогрессию (по типу SevTech: Ages), где новые технологии и ресурсы открываются строго по ходу выполнения квестов.
+                          <span className="text-white font-bold">TerraFirmaGreg: Modern</span> — это масштабное объединение реалистичного выживания <span className="text-[#f27d26] font-semibold">TerraFirmaCraft (TFC)</span> и сложнейшей индустриальной экосистемы <span className="text-[#f27d26] font-semibold">GregTech Modern</span> на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1 (v0.12.7)</span>.
                         </p>
                         <p>
-                          Сборка предлагает <span className="text-white font-bold">5 уникальных технологических и магических эпох (Ages)</span>, которые полностью меняют привычный геймплей:
+                          Особенности сборки <span className="text-white font-bold">TerraFirmaGreg: Modern</span>:
                         </p>
                         <ul className="space-y-1.5 pl-4 list-disc text-gray-400">
-                          <li><span className="text-white font-semibold">Age 1 (Origins & Magic)</span> — выживание с примитивными инструментами, основы Blood Magic и Occultism.</li>
-                          <li><span className="text-white font-semibold">Age 2 (Steam & Create)</span> — эра кинетической энергии и первой автоматизации с модом Create.</li>
-                          <li><span className="text-white font-semibold">Age 3 (Immersive Industry)</span> — электричество, тяжелое машиностроение Immersive Engineering и Astral Sorcery.</li>
-                          <li><span className="text-white font-semibold">Age 4 (Advanced Tech)</span> — цифровые логистические системы Applied Energistics 2 и механизмы Mekanism.</li>
-                          <li><span className="text-white font-semibold">Age 5 (Creative Supremacy)</span> — получение креативных предметов, безграничная энергия и полная автоматизация.</li>
+                          <li><span className="text-white font-semibold">Реалистичная геология и ковка</span> — поиск рудных жил по минералам на поверхности, промывка руды в лотках, обжиг керамики в ямах, литье сплавов и ручная ковка инструментов на наковальне.</li>
+                          <li><span className="text-white font-semibold">Суровое выживание</span> — учёт питательности рациона (белки, углеводы, жиры, фрукты, овощи), сезонов года, срока годности продуктов и климата.</li>
+                          <li><span className="text-white font-semibold">Эпохи технологического прогресса</span> — путь от каменных орудий и бронзового века до паровых машин, электрических эпох (LV, MV, HV, EV, IV, LuV, ZPM, UV) и термоядерного синтеза.</li>
+                          <li><span className="text-white font-semibold">Глубокая химия и автоматизация</span> — сотни химических реакций, переработка нефти, полимеров и создание сложных микросхем.</li>
+                          <li><span className="text-white font-semibold">Интерактивная книга квестов</span> — детальные цепочки заданий, которые помогут вам шаг за шагом освоить все тонкости выживания и механик.</li>
                         </ul>
                         <p>
-                          Рецепты абсолютно всех модов тесно переплетены между собой. Чтобы продвинуться в технологиях, вам придется изучать тайную магию, а для создания мощных магических артефактов потребуются современные высокотехнологичные фабрики. Более 1500+ квестов помогут вам пройти этот сложный, но увлекательный путь!
+                          Погрузитесь в один из самых глубоких, проработанных и хардкорных технологических миров Minecraft вместе с сообществом Veles PlayGame!
                         </p>
                       </div>
                     </motion.div>
