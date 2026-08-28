@@ -24,43 +24,51 @@ import {
   Timer
 } from 'lucide-react';
 
-// Initial uptime duration: 37 hours and 30 minutes
-const INITIAL_UPTIME_SEC = 37 * 3600 + 30 * 60;
+// Fixed world start timestamp (2026-08-27T06:32:00.000Z - exactly 37h 35m at launch point)
+// Using a fixed anchor timestamp ensures the timer never resets on page refresh, device switch, or cache clear.
+const WORLD_START_TIMESTAMP = new Date('2026-08-27T06:32:00.000Z').getTime();
+
+function getFormattedStartDate(timestamp: number): string {
+  const startDate = new Date(timestamp);
+  const day = startDate.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  const time = startDate.toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  return `${day} в ${time}`;
+}
 
 export default function HomePage() {
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
   const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
   
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(INITIAL_UPTIME_SEC);
-  const [startDateFormatted, setStartDateFormatted] = useState<string>('');
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(() => {
+    return Math.max(0, Math.floor((Date.now() - WORLD_START_TIMESTAMP) / 1000));
+  });
+  const [startDateFormatted, setStartDateFormatted] = useState<string>(() => {
+    return getFormattedStartDate(WORLD_START_TIMESTAMP);
+  });
 
   useEffect(() => {
-    const STORAGE_KEY = 'tfg_world_start_timestamp_v3';
-    let startTime: number;
+    const STORAGE_KEY = 'tfg_fixed_world_start_time';
+    let startTime = WORLD_START_TIMESTAMP;
     
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored && !isNaN(Number(stored)) && Number(stored) < Date.now()) {
+      if (stored && !isNaN(Number(stored)) && Number(stored) <= Date.now()) {
         startTime = Number(stored);
       } else {
-        startTime = Date.now() - INITIAL_UPTIME_SEC * 1000;
-        localStorage.setItem(STORAGE_KEY, startTime.toString());
+        localStorage.setItem(STORAGE_KEY, WORLD_START_TIMESTAMP.toString());
       }
     } catch {
-      startTime = Date.now() - INITIAL_UPTIME_SEC * 1000;
+      startTime = WORLD_START_TIMESTAMP;
     }
 
-    const startDate = new Date(startTime);
-    const day = startDate.toLocaleDateString('ru-RU', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-    const time = startDate.toLocaleTimeString('ru-RU', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    const formatted = `${day} в ${time}`;
+    const formatted = getFormattedStartDate(startTime);
 
     const updateTimer = () => {
       const now = Date.now();
@@ -69,11 +77,9 @@ export default function HomePage() {
       setStartDateFormatted(formatted);
     };
 
-    const initialTimeout = setTimeout(updateTimer, 0);
     const interval = setInterval(updateTimer, 1000);
 
     return () => {
-      clearTimeout(initialTimeout);
       clearInterval(interval);
     };
   }, []);
@@ -291,8 +297,11 @@ export default function HomePage() {
               
               <div className="mb-8">
                 <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern (v0.12.7)</div>
-                <div className="text-xs text-gray-400 leading-relaxed">
-                  Неофициальный сервер на базе хардкорной технологической сборки TerraFirmaGreg: Modern. Скачайте архив сборки с Google Drive для входа на сервер.
+                <div className="text-xs text-gray-400 leading-relaxed mb-3">
+                  Неофициальный сервер на базе хардкорной сборки TerraFirmaGreg: Modern (Forge 1.20.1).
+                </div>
+                <div className="p-3 rounded-xl bg-black/40 border border-[#f27d26]/20 text-[11px] text-gray-300 leading-relaxed">
+                  <span className="text-[#f27d26] font-bold">Как играть:</span> Скачайте архив и <span className="text-white font-semibold">переместите все файлы в папку игры</span> (инстанса Minecraft).
                 </div>
               </div>
 
@@ -333,7 +342,7 @@ export default function HomePage() {
             {/* Left Column: Tab Selectors */}
             <div className="lg:col-span-5 flex flex-col gap-3">
               {[
-                { id: 0, title: "Как зайти на сервер?", icon: Tv, desc: "Пошаговая инструкция для подключения к сборке" },
+                { id: 0, title: "Как играть?", icon: Tv, desc: "Переместите все файлы в папку игры" },
                 { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
                 { id: 2, title: "Сборка TerraFirmaGreg Modern", icon: Cpu, desc: "Реалистичная геология TFC и технологии GregTech" }
               ].map((tab) => {
@@ -395,24 +404,26 @@ export default function HomePage() {
                     >
                       <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
                         <Tv className="w-5 h-5 text-[#f27d26]" />
-                        <span>Как зайти на сервер?</span>
+                        <span>Как играть? (Инструкция по установке)</span>
                       </h3>
                       <div className="space-y-2.5 text-xs text-gray-300 leading-relaxed">
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">1.</span>
-                          <p>Нажмите оранжевую кнопку <span className="text-white font-semibold">«Скачать с Google Drive»</span> выше и скачайте архив сборки.</p>
+                          <p>Нажмите кнопку <span className="text-white font-semibold">«Скачать с Google Drive»</span> и загрузите архив сборки.</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте ваш лаунчер Minecraft и создайте чистый инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern v0.12.7</span>).</p>
+                          <p>Откройте лаунчер Minecraft и создайте инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern v0.12.7</span>).</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
-                          <p>Распакуйте скачанный ZIP-архив и перенесите все папки (такие как <span className="text-white font-semibold">mods</span>, <span className="text-white font-semibold">config</span> и другие) напрямую в корневую папку вашего игрового клиента/инстанса Minecraft.</p>
+                          <p className="bg-[#f27d26]/10 p-2.5 rounded-lg border border-[#f27d26]/30 text-white">
+                            <span className="text-[#f27d26] font-black uppercase tracking-wider">Главный шаг:</span> Распакуйте архив и <strong className="text-[#f27d26] font-black text-[13px] underline decoration-[#f27d26]/50">переместите все файлы в папку игры</strong> (папки <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">mods</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">config</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">kubejs</code> и остальные файлы перенесите в корневую директорию вашего инстанса/папку <code className="bg-black/60 px-1.5 py-0.5 rounded font-mono text-gray-200">.minecraft</code>).
+                          </p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">4.</span>
-                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">213.152.43.53:25589</span> из блока «Подключение», запускайте игру и подключайтесь к нам!</p>
+                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">213.152.43.53:25589</span>, запускайте игру и заходите в сетевую игру!</p>
                         </div>
                       </div>
                     </motion.div>
