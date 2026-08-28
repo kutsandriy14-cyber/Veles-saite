@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   Server, 
@@ -17,12 +17,71 @@ import {
   Tv,
   ArrowRight,
   ChevronDown,
-  Users
+  Users,
+  Clock,
+  Calendar,
+  Sparkles,
+  Timer
 } from 'lucide-react';
+
+// Initial uptime duration: 37 hours and 30 minutes
+const INITIAL_UPTIME_SEC = 37 * 3600 + 30 * 60;
 
 export default function HomePage() {
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
   const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
+  
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(INITIAL_UPTIME_SEC);
+  const [startDateFormatted, setStartDateFormatted] = useState<string>('');
+
+  useEffect(() => {
+    const STORAGE_KEY = 'tfg_world_start_timestamp_v3';
+    let startTime: number;
+    
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && !isNaN(Number(stored)) && Number(stored) < Date.now()) {
+        startTime = Number(stored);
+      } else {
+        startTime = Date.now() - INITIAL_UPTIME_SEC * 1000;
+        localStorage.setItem(STORAGE_KEY, startTime.toString());
+      }
+    } catch {
+      startTime = Date.now() - INITIAL_UPTIME_SEC * 1000;
+    }
+
+    const startDate = new Date(startTime);
+    const day = startDate.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+    const time = startDate.toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    const formatted = `${day} в ${time}`;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const diff = Math.max(0, Math.floor((now - startTime) / 1000));
+      setElapsedSeconds(diff);
+      setStartDateFormatted(formatted);
+    };
+
+    const initialTimeout = setTimeout(updateTimer, 0);
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => {
+      clearTimeout(initialTimeout);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const days = Math.floor(elapsedSeconds / (24 * 3600));
+  const hours = Math.floor((elapsedSeconds % (24 * 3600)) / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -75,6 +134,102 @@ export default function HomePage() {
               <div className="flex items-center gap-2 text-xs font-mono">
                 <span className="text-gray-500">Администратор:</span> 
                 <span className="text-gray-300">Veles PlayGame</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* World Uptime & Start Time */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.98, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.05 }}
+          className="glass-card border-[#f27d26]/30 bg-gradient-to-r from-[#f27d26]/[0.08] via-black/50 to-[#3b82f6]/[0.08] rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden shadow-[0_0_30px_rgba(242,125,38,0.1)]"
+        >
+          {/* Ambient background glow elements */}
+          <div className="absolute top-0 left-1/4 w-48 h-48 bg-[#f27d26]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="relative z-10">
+            {/* Top Bar: Title & Launch timestamp */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-white/10">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#f27d26]/20 border border-[#f27d26]/40 flex items-center justify-center shadow-[0_0_15px_rgba(242,125,38,0.3)] shrink-0">
+                  <Timer className="w-5 h-5 text-[#f27d26] animate-pulse" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Время жизни текущего мира</h2>
+                    <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
+                  </div>
+                  <p className="text-xs text-gray-400">Сколько времени прошло с момента старта игрового мира</p>
+                </div>
+              </div>
+
+              {startDateFormatted && (
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#f27d26]/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner">
+                  <Calendar className="w-4 h-4 text-[#f27d26] shrink-0" />
+                  <span>Время старта мира: <strong className="text-white font-bold">{startDateFormatted}</strong></span>
+                </div>
+              )}
+            </div>
+
+            {/* Countdown / Uptime Grid (Days, Hours, Minutes, Seconds) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+              {/* Days */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(242,125,38,0.3)]">
+                  {String(days).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
+                  {days === 1 ? 'День' : days >= 2 && days <= 4 ? 'Дня' : 'Дней'}
+                </span>
+              </div>
+
+              {/* Hours */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10">
+                  {String(hours).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
+                  {hours === 1 ? 'Час' : hours >= 2 && hours <= 4 ? 'Часа' : 'Часов'}
+                </span>
+              </div>
+
+              {/* Minutes */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10">
+                  {String(minutes).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
+                  {minutes === 1 ? 'Минута' : minutes >= 2 && minutes <= 4 ? 'Минуты' : 'Минут'}
+                </span>
+              </div>
+
+              {/* Seconds */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]">
+                  {String(seconds).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
+                  {seconds === 1 ? 'Секунда' : seconds >= 2 && seconds <= 4 ? 'Секунды' : 'Секунд'}
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom Status / Progress line */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#f27d26]" />
+                <span>Состояние мира: <strong className="text-gray-200 font-semibold">Сервер активен • Мир успешно развивается</strong></span>
+              </div>
+              <div className="flex items-center gap-1.5 text-gray-400">
+                <Clock className="w-3.5 h-3.5 text-[#f27d26]" />
+                <span>Старт мира: <span className="text-[#f27d26] font-bold">{startDateFormatted}</span></span>
               </div>
             </div>
           </div>
