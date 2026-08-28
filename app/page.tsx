@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { motion } from 'motion/react';
 import { 
   Server, 
@@ -24,12 +24,24 @@ import {
   Timer
 } from 'lucide-react';
 
-// Fixed world start timestamp (2026-08-27T06:32:00.000Z - exactly 37h 35m at launch point)
-// Using a fixed anchor timestamp ensures the timer never resets on page refresh, device switch, or cache clear.
+// Fixed world start timestamp (2026-08-27T06:32:00.000Z - anchor at launch point)
 const WORLD_START_TIMESTAMP = new Date('2026-08-27T06:32:00.000Z').getTime();
 
-function getFormattedStartDate(timestamp: number): string {
-  const startDate = new Date(timestamp);
+function subscribeTimer(callback: () => void) {
+  const interval = setInterval(callback, 1000);
+  return () => clearInterval(interval);
+}
+
+function getElapsedSecondsClientSnapshot(): number {
+  return Math.max(0, Math.floor((Date.now() - WORLD_START_TIMESTAMP) / 1000));
+}
+
+function getElapsedSecondsServerSnapshot(): number {
+  return 135300; // ~37.5 hours anchor
+}
+
+function getFormattedStartDateClient(): string {
+  const startDate = new Date(WORLD_START_TIMESTAMP);
   const day = startDate.toLocaleDateString('ru-RU', {
     day: 'numeric',
     month: 'long',
@@ -42,52 +54,43 @@ function getFormattedStartDate(timestamp: number): string {
   return `${day} в ${time}`;
 }
 
+function getFormattedStartDateServer(): string {
+  return '27 августа 2026 г. в 09:32';
+}
+
+function getPluralWord(n: number, one: string, few: string, many: string): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 19) return many;
+  if (mod10 === 1) return one;
+  if (mod10 >= 2 && mod10 <= 4) return few;
+  return many;
+}
+
 export default function HomePage() {
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
   const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
   
-  const [elapsedSeconds, setElapsedSeconds] = useState<number>(() => {
-    return Math.max(0, Math.floor((Date.now() - WORLD_START_TIMESTAMP) / 1000));
-  });
-  const [startDateFormatted, setStartDateFormatted] = useState<string>(() => {
-    return getFormattedStartDate(WORLD_START_TIMESTAMP);
-  });
+  const elapsedSeconds = useSyncExternalStore(
+    subscribeTimer,
+    getElapsedSecondsClientSnapshot,
+    getElapsedSecondsServerSnapshot
+  );
 
-  useEffect(() => {
-    const STORAGE_KEY = 'tfg_fixed_world_start_time';
-    let startTime = WORLD_START_TIMESTAMP;
-    
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored && !isNaN(Number(stored)) && Number(stored) <= Date.now()) {
-        startTime = Number(stored);
-      } else {
-        localStorage.setItem(STORAGE_KEY, WORLD_START_TIMESTAMP.toString());
-      }
-    } catch {
-      startTime = WORLD_START_TIMESTAMP;
-    }
+  const startDateFormatted = useSyncExternalStore(
+    subscribeTimer,
+    getFormattedStartDateClient,
+    getFormattedStartDateServer
+  );
 
-    const formatted = getFormattedStartDate(startTime);
+  // Minecraft time calculation: 1 MC Day = 20 real minutes (1200 seconds)
+  const mcDays = Math.floor(elapsedSeconds / 1200);
+  const minutesInDay = Math.floor((elapsedSeconds % 1200) / 60);
+  const secondsInDay = elapsedSeconds % 60;
 
-    const updateTimer = () => {
-      const now = Date.now();
-      const diff = Math.max(0, Math.floor((now - startTime) / 1000));
-      setElapsedSeconds(diff);
-      setStartDateFormatted(formatted);
-    };
-
-    const interval = setInterval(updateTimer, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const days = Math.floor(elapsedSeconds / (24 * 3600));
-  const hours = Math.floor((elapsedSeconds % (24 * 3600)) / 3600);
-  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
-  const seconds = elapsedSeconds % 60;
+  // Real world hours for reference
+  const realHours = Math.floor(elapsedSeconds / 3600);
+  const realMinutes = Math.floor((elapsedSeconds % 3600) / 60);
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -173,69 +176,70 @@ export default function HomePage() {
               </div>
 
               {startDateFormatted && (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#f27d26]/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#f27d26]/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner" suppressHydrationWarning>
                   <Calendar className="w-4 h-4 text-[#f27d26] shrink-0" />
-                  <span>Время старта мира: <strong className="text-white font-bold">{startDateFormatted}</strong></span>
+                  <span suppressHydrationWarning>Время старта мира: <strong className="text-white font-bold" suppressHydrationWarning>{startDateFormatted}</strong></span>
                 </div>
               )}
             </div>
 
-            {/* Countdown / Uptime Grid (Days, Hours, Minutes, Seconds) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-              {/* Days */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(242,125,38,0.3)]">
-                  {String(days).padStart(2, '0')}
+            {/* Countdown / Uptime Grid (Minecraft Days, Minutes, Seconds) */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+              {/* Minecraft Days */}
+              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="flex items-baseline gap-1 relative z-10" suppressHydrationWarning>
+                  <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight drop-shadow-[0_0_15px_rgba(242,125,38,0.4)]" suppressHydrationWarning>
+                    {mcDays}
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-[#f27d26]/80 font-mono">-й</span>
+                </div>
+                <span className="text-xs sm:text-sm font-bold text-gray-200 uppercase tracking-wider mt-2 relative z-10 font-mono text-center" suppressHydrationWarning>
+                  {getPluralWord(mcDays, 'Майнкрафт день', 'Майнкрафт дня', 'Майнкрафт дней')}
                 </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
-                  {days === 1 ? 'День' : days >= 2 && days <= 4 ? 'Дня' : 'Дней'}
-                </span>
-              </div>
-
-              {/* Hours */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10">
-                  {String(hours).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
-                  {hours === 1 ? 'Час' : hours >= 2 && hours <= 4 ? 'Часа' : 'Часов'}
+                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
+                  (1 день = 20 реальных минут)
                 </span>
               </div>
 
               {/* Minutes */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10">
-                  {String(minutes).padStart(2, '0')}
+              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                  {String(minutesInDay).padStart(2, '0')}
                 </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
-                  {minutes === 1 ? 'Минута' : minutes >= 2 && minutes <= 4 ? 'Минуты' : 'Минут'}
+                <span className="text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wider mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(minutesInDay, 'Минута', 'Минуты', 'Минут')}
+                </span>
+                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
+                  в текущем дне
                 </span>
               </div>
 
               {/* Seconds */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]">
-                  {String(seconds).padStart(2, '0')}
+              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_15px_rgba(59,130,246,0.4)]" suppressHydrationWarning>
+                  {String(secondsInDay).padStart(2, '0')}
                 </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono">
-                  {seconds === 1 ? 'Секунда' : seconds >= 2 && seconds <= 4 ? 'Секунды' : 'Секунд'}
+                <span className="text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wider mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(secondsInDay, 'Секунда', 'Секунды', 'Секунд')}
+                </span>
+                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
+                  текущий тик
                 </span>
               </div>
             </div>
 
             {/* Bottom Status / Progress line */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5" suppressHydrationWarning>
+              <div className="flex items-center gap-2" suppressHydrationWarning>
                 <Sparkles className="w-4 h-4 text-[#f27d26]" />
-                <span>Состояние мира: <strong className="text-gray-200 font-semibold">Сервер активен • Мир успешно развивается</strong></span>
+                <span suppressHydrationWarning>Игровое время: <strong className="text-gray-200 font-semibold" suppressHydrationWarning>{mcDays} майнкрафт-дней</strong> <span className="text-gray-500" suppressHydrationWarning>({realHours} ч. {realMinutes} мин. реального времени)</span></span>
               </div>
-              <div className="flex items-center gap-1.5 text-gray-400">
+              <div className="flex items-center gap-1.5 text-gray-400" suppressHydrationWarning>
                 <Clock className="w-3.5 h-3.5 text-[#f27d26]" />
-                <span>Старт мира: <span className="text-[#f27d26] font-bold">{startDateFormatted}</span></span>
+                <span suppressHydrationWarning>Старт мира: <span className="text-[#f27d26] font-bold" suppressHydrationWarning>{startDateFormatted || 'Загрузка...'}</span></span>
               </div>
             </div>
           </div>
