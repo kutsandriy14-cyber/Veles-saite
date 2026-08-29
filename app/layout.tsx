@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'TerraFirmaGreg: Modern | Veles PlayGame',
-  description: 'Неофициальный игровой сервер Minecraft TerraFirmaGreg: Modern v0.12.7 (1.20.1 Forge) от сообщества Veles PlayGame.',
+  description: 'Неофициальный игровой сервер Minecraft TerraFirmaGreg: Modern (1.20.1 Forge) от сообщества Veles PlayGame.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

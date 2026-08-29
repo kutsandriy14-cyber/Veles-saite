@@ -83,14 +83,11 @@ export default function HomePage() {
     getFormattedStartDateServer
   );
 
-  // Minecraft time calculation: 1 MC Day = 20 real minutes (1200 seconds)
-  const mcDays = Math.floor(elapsedSeconds / 1200);
-  const minutesInDay = Math.floor((elapsedSeconds % 1200) / 60);
-  const secondsInDay = elapsedSeconds % 60;
-
-  // Real world hours for reference
-  const realHours = Math.floor(elapsedSeconds / 3600);
-  const realMinutes = Math.floor((elapsedSeconds % 3600) / 60);
+  // Real time calculation (Days, Hours, Minutes, Seconds)
+  const days = Math.floor(elapsedSeconds / (24 * 3600));
+  const hours = Math.floor((elapsedSeconds % (24 * 3600)) / 3600);
+  const minutes = Math.floor((elapsedSeconds % 3600) / 60);
+  const seconds = elapsedSeconds % 60;
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -133,7 +130,6 @@ export default function HomePage() {
                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.20.1</span>
-                  <span className="text-sm bg-[#f27d26]/10 text-[#f27d26] border border-[#f27d26]/30 px-2.5 py-0.5 rounded-lg font-mono font-bold">v0.12.7</span>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-sm font-mono">
@@ -183,50 +179,49 @@ export default function HomePage() {
               )}
             </div>
 
-            {/* Countdown / Uptime Grid (Minecraft Days, Minutes, Seconds) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-              {/* Minecraft Days */}
-              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="flex items-baseline gap-1 relative z-10" suppressHydrationWarning>
-                  <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight drop-shadow-[0_0_15px_rgba(242,125,38,0.4)]" suppressHydrationWarning>
-                    {mcDays}
-                  </span>
-                  <span className="text-sm sm:text-base font-bold text-[#f27d26]/80 font-mono">-й</span>
-                </div>
-                <span className="text-xs sm:text-sm font-bold text-gray-200 uppercase tracking-wider mt-2 relative z-10 font-mono text-center" suppressHydrationWarning>
-                  {getPluralWord(mcDays, 'Майнкрафт день', 'Майнкрафт дня', 'Майнкрафт дней')}
+            {/* Uptime Grid (Days, Hours, Minutes, Seconds) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+              {/* Days */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(242,125,38,0.3)]" suppressHydrationWarning>
+                  {String(days).padStart(2, '0')}
                 </span>
-                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
-                  (1 день = 20 реальных минут)
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(days, 'День', 'Дня', 'Дней')}
+                </span>
+              </div>
+
+              {/* Hours */}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                  {String(hours).padStart(2, '0')}
+                </span>
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(hours, 'Час', 'Часа', 'Часов')}
                 </span>
               </div>
 
               {/* Minutes */}
-              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
-                  {String(minutesInDay).padStart(2, '0')}
+                  {String(minutes).padStart(2, '0')}
                 </span>
-                <span className="text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wider mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(minutesInDay, 'Минута', 'Минуты', 'Минут')}
-                </span>
-                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
-                  в текущем дне
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(minutes, 'Минута', 'Минуты', 'Минут')}
                 </span>
               </div>
 
               {/* Seconds */}
-              <div className="flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_15px_rgba(59,130,246,0.4)]" suppressHydrationWarning>
-                  {String(secondsInDay).padStart(2, '0')}
+              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]" suppressHydrationWarning>
+                  {String(seconds).padStart(2, '0')}
                 </span>
-                <span className="text-xs sm:text-sm font-bold text-gray-300 uppercase tracking-wider mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(secondsInDay, 'Секунда', 'Секунды', 'Секунд')}
-                </span>
-                <span className="text-[10px] text-gray-500 font-mono mt-1 relative z-10">
-                  текущий тик
+                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                  {getPluralWord(seconds, 'Секунда', 'Секунды', 'Секунд')}
                 </span>
               </div>
             </div>
@@ -235,7 +230,7 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5" suppressHydrationWarning>
               <div className="flex items-center gap-2" suppressHydrationWarning>
                 <Sparkles className="w-4 h-4 text-[#f27d26]" />
-                <span suppressHydrationWarning>Игровое время: <strong className="text-gray-200 font-semibold" suppressHydrationWarning>{mcDays} майнкрафт-дней</strong> <span className="text-gray-500" suppressHydrationWarning>({realHours} ч. {realMinutes} мин. реального времени)</span></span>
+                <span suppressHydrationWarning>Состояние мира: <strong className="text-gray-200 font-semibold">Сервер активен • Мир успешно развивается</strong></span>
               </div>
               <div className="flex items-center gap-1.5 text-gray-400" suppressHydrationWarning>
                 <Clock className="w-3.5 h-3.5 text-[#f27d26]" />
@@ -300,7 +295,7 @@ export default function HomePage() {
               </h2>
               
               <div className="mb-8">
-                <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern (v0.12.7)</div>
+                <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern</div>
                 <div className="text-xs text-gray-400 leading-relaxed mb-3">
                   Неофициальный сервер на базе хардкорной сборки TerraFirmaGreg: Modern (Forge 1.20.1).
                 </div>
@@ -417,7 +412,7 @@ export default function HomePage() {
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте лаунчер Minecraft и создайте инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern v0.12.7</span>).</p>
+                          <p>Откройте лаунчер Minecraft и создайте инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern</span>).</p>
                         </div>
                         <div className="flex gap-3">
                           <span className="text-[#f27d26] font-mono font-bold">3.</span>
@@ -466,11 +461,11 @@ export default function HomePage() {
                     >
                       <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
                         <Cpu className="w-5 h-5 text-[#f27d26]" />
-                        <span>TerraFirmaGreg: Modern — Edition v0.12.7</span>
+                        <span>TerraFirmaGreg: Modern</span>
                       </h3>
                       <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
                         <p>
-                          <span className="text-white font-bold">TerraFirmaGreg: Modern</span> — это масштабное объединение реалистичного выживания <span className="text-[#f27d26] font-semibold">TerraFirmaCraft (TFC)</span> и сложнейшей индустриальной экосистемы <span className="text-[#f27d26] font-semibold">GregTech Modern</span> на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1 (v0.12.7)</span>.
+                          <span className="text-white font-bold">TerraFirmaGreg: Modern</span> — это масштабное объединение реалистичного выживания <span className="text-[#f27d26] font-semibold">TerraFirmaCraft (TFC)</span> и сложнейшей индустриальной экосистемы <span className="text-[#f27d26] font-semibold">GregTech Modern</span> на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span>.
                         </p>
                         <p>
                           Особенности сборки <span className="text-white font-bold">TerraFirmaGreg: Modern</span>:
