@@ -306,7 +306,7 @@ export default function HomePage() {
 
               <div className="mt-auto">
                 <a 
-                  href="https://drive.google.com/file/d/13nTl_U7cAusloN8O2uxtTzTJAiGwGadW/view?usp=drivesdk"
+                  href="https://drive.google.com/file/d/11NGyYHSN86LjzchJ4GLyUo3uC4Nzsge9/view?usp=drivesdk"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
