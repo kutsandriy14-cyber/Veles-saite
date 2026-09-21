@@ -877,7 +877,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             {/* Discord */}
             <a 
-              href="https://discord.gg/cd2utAp2n" 
+              href="https://discord.gg/QJaNpC6d2" 
               target="_blank" 
               rel="noreferrer noopener"
               className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] hover:-translate-y-1 transition-all duration-300 group"
@@ -898,7 +898,7 @@ export default function HomePage() {
 
             {/* Telegram */}
             <a 
-              href="https://t.me/veles_playgame_s" 
+              href="https://t.me/VelesPlayGame" 
               target="_blank" 
               rel="noreferrer noopener"
               className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#229ED9]/50 hover:bg-[#229ED9]/10 hover:shadow-[0_0_20px_rgba(34,158,217,0.15)] hover:-translate-y-1 transition-all duration-300 group"
