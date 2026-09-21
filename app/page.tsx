@@ -1,31 +1,34 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Server, 
   Copy, 
   Download, 
   ExternalLink,
-  MessageCircle,
-  Hash,
-  Video,
-  Youtube,
-  Settings,
+  Video, 
+  Youtube, 
+  Settings, 
   Cpu, 
-  CheckCircle2,
-  Tv,
-  ArrowRight,
-  ChevronDown,
-  Users,
-  Clock,
-  Calendar,
-  Sparkles,
-  Timer
+  CheckCircle2, 
+  Tv, 
+  ArrowRight, 
+  ChevronDown, 
+  Users, 
+  Clock, 
+  Calendar, 
+  Sparkles, 
+  Timer,
+  Eye,
+  ShieldAlert
 } from 'lucide-react';
 
-// Fixed world start timestamp (2026-08-27T06:32:00.000Z - anchor at launch point)
+// Fixed world start timestamp for Server 1 (TerraFirmaGreg)
 const WORLD_START_TIMESTAMP = new Date('2026-08-27T06:32:00.000Z').getTime();
+
+// Fixed world start timestamp for Server 2 (Liminal Industries - Opening September 21, 2026 10:00 UTC)
+const LIMINAL_START_TIMESTAMP = new Date('2026-09-21T10:00:00.000Z').getTime();
 
 function subscribeTimer(callback: () => void) {
   const interval = setInterval(callback, 1000);
@@ -37,7 +40,15 @@ function getElapsedSecondsClientSnapshot(): number {
 }
 
 function getElapsedSecondsServerSnapshot(): number {
-  return 135300; // ~37.5 hours anchor
+  return 135300; // anchor
+}
+
+function getLiminalElapsedSecondsClientSnapshot(): number {
+  return Math.max(0, Math.floor((Date.now() - LIMINAL_START_TIMESTAMP) / 1000));
+}
+
+function getLiminalElapsedSecondsServerSnapshot(): number {
+  return 25200; // anchor
 }
 
 function getFormattedStartDateClient(): string {
@@ -58,6 +69,24 @@ function getFormattedStartDateServer(): string {
   return '27 августа 2026 г. в 09:32';
 }
 
+function getLiminalFormattedStartDateClient(): string {
+  const startDate = new Date(LIMINAL_START_TIMESTAMP);
+  const day = startDate.toLocaleDateString('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+  const time = startDate.toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  return `${day} в ${time}`;
+}
+
+function getLiminalFormattedStartDateServer(): string {
+  return '21 сентября 2026 г. в 13:00';
+}
+
 function getPluralWord(n: number, one: string, few: string, many: string): string {
   const mod10 = n % 10;
   const mod100 = n % 100;
@@ -68,9 +97,10 @@ function getPluralWord(n: number, one: string, few: string, many: string): strin
 }
 
 export default function HomePage() {
+  const [activeServer, setActiveServer] = useState<'tfg' | 'liminal'>('tfg');
   const [copiedIp, setCopiedIp] = useState<string | null>(null);
-  const [activeAccordion, setActiveAccordion] = useState<number | null>(0);
-  
+  const [tfgAccordion, setTfgAccordion] = useState<number | null>(0);
+
   const elapsedSeconds = useSyncExternalStore(
     subscribeTimer,
     getElapsedSecondsClientSnapshot,
@@ -83,11 +113,29 @@ export default function HomePage() {
     getFormattedStartDateServer
   );
 
-  // Real time calculation (Days, Hours, Minutes, Seconds)
+  const liminalElapsedSeconds = useSyncExternalStore(
+    subscribeTimer,
+    getLiminalElapsedSecondsClientSnapshot,
+    getLiminalElapsedSecondsServerSnapshot
+  );
+
+  const liminalStartDateFormatted = useSyncExternalStore(
+    subscribeTimer,
+    getLiminalFormattedStartDateClient,
+    getLiminalFormattedStartDateServer
+  );
+
+  // Real time calculation for TFG (Days, Hours, Minutes, Seconds)
   const days = Math.floor(elapsedSeconds / (24 * 3600));
   const hours = Math.floor((elapsedSeconds % (24 * 3600)) / 3600);
   const minutes = Math.floor((elapsedSeconds % 3600) / 60);
   const seconds = elapsedSeconds % 60;
+
+  // Real time calculation for Liminal Industries (Days, Hours, Minutes, Seconds)
+  const liminalDays = Math.floor(liminalElapsedSeconds / (24 * 3600));
+  const liminalHours = Math.floor((liminalElapsedSeconds % (24 * 3600)) / 3600);
+  const liminalMinutes = Math.floor((liminalElapsedSeconds % 3600) / 60);
+  const liminalSeconds = liminalElapsedSeconds % 60;
 
   const handleCopy = (ip: string) => {
     navigator.clipboard.writeText(ip);
@@ -95,529 +143,831 @@ export default function HomePage() {
     setTimeout(() => setCopiedIp(null), 2000);
   };
 
+  const isLiminal = activeServer === 'liminal';
+
   return (
-    <main className="min-h-screen atmosphere text-gray-100 selection:bg-[#f27d26]/30 overflow-hidden relative font-sans">
+    <main className={`min-h-screen ${isLiminal ? 'liminal-atmosphere selection:bg-yellow-500/30' : 'atmosphere selection:bg-[#f27d26]/30'} text-gray-100 overflow-hidden relative font-sans transition-colors duration-700`}>
       
-      {/* Background elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#f27d26]/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px]" />
+      {/* Dynamic Background Elements */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {isLiminal ? (
+          <>
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-yellow-500/[0.07] rounded-full blur-[140px] animate-pulse" />
+            <div className="absolute bottom-1/3 right-1/4 w-[500px] h-[500px] bg-lime-500/[0.05] rounded-full blur-[140px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-600/[0.03] rounded-full blur-[180px]" />
+            {/* Subtle eerie scanline overlay */}
+            <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#eab308_1px,transparent_1px)] [background-size:24px_24px]" />
+          </>
+        ) : (
+          <>
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#f27d26]/5 rounded-full blur-[120px]" />
+            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-[120px]" />
+          </>
+        )}
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 lg:py-24 relative z-10 min-h-screen flex flex-col">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 lg:py-12 relative z-10 min-h-screen flex flex-col">
         
-        {/* Header Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
-        >
-          <div className="mb-6">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#f27d26]/10 border border-[#f27d26]/20 rounded-full">
-              <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
-              <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Неофициальный сервер • Онлайн</span>
-            </span>
-          </div>
+        {/* Navigation Bar between Servers */}
+        <header className="mb-8 relative z-20">
+          <div className="glass-card rounded-2xl p-2 sm:p-2.5 border border-white/10 backdrop-blur-xl bg-black/60 shadow-2xl flex items-center justify-center">
+            
+            {/* Server Switcher: Just Two Tabs */}
+            <div className="grid grid-cols-2 gap-2 bg-black/70 p-1.5 rounded-xl border border-white/5 w-full max-w-xl">
+              {/* Server 1 Tab: TerraFirmaGreg */}
+              <button
+                onClick={() => setActiveServer('tfg')}
+                className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
+                  activeServer === 'tfg'
+                    ? 'bg-[#f27d26] text-black shadow-[0_0_20px_rgba(242,125,38,0.5)] font-black'
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                <Cpu className="w-4 h-4 shrink-0" />
+                <span className="truncate">1. TerraFirmaGreg</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0 hidden sm:inline-block" title="Онлайн" />
+              </button>
 
-          <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
-            TERRAFIRMAGREG
-          </h1>
-
-          <div className="flex flex-col md:flex-row md:items-start justify-end gap-6">
-            <div className="flex flex-col items-start md:items-end gap-3 shrink-0 pt-1">
-              <div className="flex flex-col md:items-end">
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.20.1</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 text-sm font-mono">
-                <span className="text-gray-400">Формат:</span> 
-                <span className="text-white font-bold">Выживание / Квесты</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="text-gray-500">Администратор:</span> 
-                <span className="text-gray-300">Veles PlayGame</span>
-              </div>
+              {/* Server 2 Tab: Liminal Industries */}
+              <button
+                onClick={() => setActiveServer('liminal')}
+                className={`inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 relative ${
+                  activeServer === 'liminal'
+                    ? 'bg-yellow-400 text-black shadow-[0_0_25px_rgba(234,179,8,0.6)] font-black'
+                    : 'text-gray-400 hover:text-yellow-300 hover:bg-yellow-500/10'
+                }`}
+              >
+                <Eye className="w-4 h-4 shrink-0 text-amber-500" />
+                <span className="truncate">2. Liminal Industries</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] bg-red-600 text-white font-mono uppercase tracking-tight shrink-0 animate-pulse">
+                  NEW
+                </span>
+              </button>
             </div>
-          </div>
-        </motion.div>
 
-        {/* World Uptime & Start Time */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          className="glass-card border-[#f27d26]/30 bg-gradient-to-r from-[#f27d26]/[0.08] via-black/50 to-[#3b82f6]/[0.08] rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden shadow-[0_0_30px_rgba(242,125,38,0.1)]"
-        >
-          {/* Ambient background glow elements */}
-          <div className="absolute top-0 left-1/4 w-48 h-48 bg-[#f27d26]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+          </div>
+        </header>
+
+        {/* Dynamic Content Container */}
+        <AnimatePresence mode="wait">
           
-          <div className="relative z-10">
-            {/* Top Bar: Title & Launch timestamp */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-white/10">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#f27d26]/20 border border-[#f27d26]/40 flex items-center justify-center shadow-[0_0_15px_rgba(242,125,38,0.3)] shrink-0">
-                  <Timer className="w-5 h-5 text-[#f27d26] animate-pulse" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Время жизни текущего мира</h2>
-                    <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow"></span>
-                  </div>
-                  <p className="text-xs text-gray-400">Сколько времени прошло с момента старта игрового мира</p>
-                </div>
-              </div>
-
-              {startDateFormatted && (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#f27d26]/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner" suppressHydrationWarning>
-                  <Calendar className="w-4 h-4 text-[#f27d26] shrink-0" />
-                  <span suppressHydrationWarning>Время старта мира: <strong className="text-white font-bold" suppressHydrationWarning>{startDateFormatted}</strong></span>
-                </div>
-              )}
-            </div>
-
-            {/* Uptime Grid (Days, Hours, Minutes, Seconds) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
-              {/* Days */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(242,125,38,0.3)]" suppressHydrationWarning>
-                  {String(days).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(days, 'День', 'Дня', 'Дней')}
-                </span>
-              </div>
-
-              {/* Hours */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
-                  {String(hours).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(hours, 'Час', 'Часа', 'Часов')}
-                </span>
-              </div>
-
-              {/* Minutes */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
-                  {String(minutes).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(minutes, 'Минута', 'Минуты', 'Минут')}
-                </span>
-              </div>
-
-              {/* Seconds */}
-              <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]" suppressHydrationWarning>
-                  {String(seconds).padStart(2, '0')}
-                </span>
-                <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
-                  {getPluralWord(seconds, 'Секунда', 'Секунды', 'Секунд')}
-                </span>
-              </div>
-            </div>
-
-            {/* Bottom Status / Progress line */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5" suppressHydrationWarning>
-              <div className="flex items-center gap-2" suppressHydrationWarning>
-                <Sparkles className="w-4 h-4 text-[#f27d26]" />
-                <span suppressHydrationWarning>Состояние мира: <strong className="text-gray-200 font-semibold">Сервер активен • Мир успешно развивается</strong></span>
-              </div>
-              <div className="flex items-center gap-1.5 text-gray-400" suppressHydrationWarning>
-                <Clock className="w-3.5 h-3.5 text-[#f27d26]" />
-                <span suppressHydrationWarning>Старт мира: <span className="text-[#f27d26] font-bold" suppressHydrationWarning>{startDateFormatted || 'Загрузка...'}</span></span>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* IP Addresses & Start playing */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8 flex-1">
-          
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-7 glass-card border-[#3b82f6]/20 bg-gradient-to-br from-[#3b82f6]/[0.05] to-transparent rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden"
-          >
-            {/* Ambient colorful glow for connection block */}
-            <div className="absolute top-0 right-0 -m-16 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 -m-16 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl" />
-
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-[#3b82f6]/20 border border-[#3b82f6]/30 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-                  <Server className="w-5 h-5 text-[#3b82f6]" />
-                </div>
-                <h2 className="text-xl font-bold text-white tracking-wide uppercase">Подключение</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="relative group/btn">
-                  <div className="absolute inset-0 bg-blue-500/10 rounded-xl blur transition-opacity opacity-0 group-hover/btn:opacity-100" />
-                  <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-2 pl-1 relative">IP Адрес сервера</div>
-                  <button 
-                    onClick={() => handleCopy('213.152.43.53:25589')}
-                    className="w-full flex items-center justify-between p-4 bg-black/50 hover:bg-black/70 border border-blue-500/20 hover:border-blue-500/40 rounded-xl transition-all relative"
-                  >
-                    <span className="font-mono text-lg md:text-xl text-white font-bold tracking-wide group-hover/btn:text-blue-400 transition-colors">213.152.43.53:25589</span>
-                    {copiedIp === '213.152.43.53:25589' ? (
-                      <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/20"><CheckCircle2 className="w-4 h-4" /> Скопировано</span>
-                    ) : (
-                      <span className="flex items-center gap-2 text-blue-400 group-hover/btn:text-blue-300 transition-colors text-xs font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20"><Copy className="w-4 h-4" /> Копировать</span>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Download Modpack Segment */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-5 glass-card rounded-2xl p-6 md:p-8 border-[#f27d26]/20 bg-[#f27d26]/[0.02]"
-          >
-            <div className="h-full flex flex-col">
-              <h2 className="text-xl font-bold text-white tracking-wide uppercase mb-2 flex items-center justify-between">
-                <span>Запуск Игры</span>
-                <Settings className="w-5 h-5 text-[#f27d26] float-slow" />
-              </h2>
+          {/* ========================================================================= */}
+          {/* SERVER 2: LIMINAL INDUSTRIES (ЗАКУЛИСЬЕ / BACKROOMS) - CUSTOM EERIE STYLE */}
+          {/* ========================================================================= */}
+          {isLiminal ? (
+            <motion.div
+              key="liminal-server"
+              initial={{ opacity: 0, scale: 0.98, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="flex-1 flex flex-col"
+            >
               
-              <div className="mb-8">
-                <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern</div>
-                <div className="text-xs text-gray-400 leading-relaxed mb-3">
-                  Неофициальный сервер на базе хардкорной сборки TerraFirmaGreg: Modern (Forge 1.20.1).
+              {/* Important Announcement Notice */}
+              <div className="mb-6 p-4 rounded-2xl bg-black/70 border border-yellow-500/30 text-xs sm:text-sm text-yellow-200/90 font-mono shadow-[0_0_25px_rgba(234,179,8,0.1)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-yellow-500" />
+                <div className="flex items-center gap-3">
+                  <ShieldAlert className="w-5 h-5 text-yellow-400 shrink-0 animate-pulse" />
+                  <div>
+                    <span className="font-bold text-yellow-400 uppercase tracking-wide">⚠️ Важно:</span>{' '}
+                    <span>Сервер <strong className="text-white">TerraFirmaGreg Modern</strong> продолжает работу в штатном режиме, без изменений. Весь прогресс и миры на месте.</span>
+                  </div>
                 </div>
-                <div className="p-3 rounded-xl bg-black/40 border border-[#f27d26]/20 text-[11px] text-gray-300 leading-relaxed">
-                  <span className="text-[#f27d26] font-bold">Как играть:</span> Скачайте архив и <span className="text-white font-semibold">переместите все файлы в папку игры</span> (инстанса Minecraft).
-                </div>
-              </div>
-
-              <div className="mt-auto">
-                <a 
-                  href="https://drive.google.com/file/d/11NGyYHSN86LjzchJ4GLyUo3uC4Nzsge9/view?usp=drivesdk"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
+                <button
+                  onClick={() => setActiveServer('tfg')}
+                  className="px-3 py-1.5 rounded-lg bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/40 text-yellow-300 text-xs font-bold whitespace-nowrap transition-colors self-end sm:self-auto"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
-                    <Download className="w-5 h-5 text-[#f27d26]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">Скачать с Google Drive</div>
-                  </div>
-                  <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-white transition-all shrink-0" />
-                </a>
+                  К TerraFirmaGreg →
+                </button>
               </div>
-            </div>
-          </motion.div>
 
-        </div>
+              {/* Liminal Hero Header */}
+              <div className="mb-8 relative">
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1 bg-yellow-500/10 border border-yellow-500/30 rounded-full">
+                    <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
+                    <span className="text-[10px] font-bold text-yellow-300 tracking-widest uppercase font-mono">
+                      ОТКРЫТИЕ ВТОРОГО СЕРВЕРА
+                    </span>
+                  </span>
+                </div>
 
-        {/* Feature Highlights - Sliding Expandable Tabs */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mb-12 space-y-4"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-2.5 h-6 bg-[#f27d26] rounded-full shadow-[0_0_15px_rgba(242,125,38,0.4)]" />
-            <h2 className="text-xl font-black text-white tracking-wide uppercase">Информация о сервере</h2>
-          </div>
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                  <div>
+                    <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-4 text-yellow-400 glow-liminal font-mono leading-none animate-flicker-5s select-none">
+                      LIMINAL INDUSTRIES
+                    </h1>
+                    <p className="text-base sm:text-lg text-yellow-100/80 max-w-2xl font-sans leading-relaxed border-l-2 border-yellow-500/50 pl-4 py-1">
+                      <span className="text-yellow-400 font-bold">Закулисье</span>. Бесконечные коридоры, гул ламп, загадочные уровни и аномалии. Исследуйте, выживайте и ищите выход — если он вообще существует.
+                    </p>
+                  </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left Column: Tab Selectors */}
-            <div className="lg:col-span-5 flex flex-col gap-3">
-              {[
-                { id: 0, title: "Как играть?", icon: Tv, desc: "Переместите все файлы в папку игры" },
-                { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
-                { id: 2, title: "Сборка TerraFirmaGreg Modern", icon: Cpu, desc: "Реалистичная геология TFC и технологии GregTech" }
-              ].map((tab) => {
-                const IconComponent = tab.icon;
-                const isActive = activeAccordion === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveAccordion(isActive ? null : tab.id)}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-center justify-between group relative overflow-hidden ${
-                      isActive 
-                        ? "bg-[#f27d26]/10 border-[#f27d26]/40 shadow-[0_0_20px_rgba(242,125,38,0.05)]" 
-                        : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
-                    }`}
-                  >
-                    <div className="flex items-center gap-4 relative z-10">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
-                        isActive ? "bg-[#f27d26]/20 text-[#f27d26]" : "bg-white/5 text-gray-400 group-hover:text-white"
-                      }`}>
-                        <IconComponent className="w-5 h-5" />
+                  {/* Metadata pill */}
+                  <div className="flex flex-col sm:items-end gap-2 shrink-0 bg-black/60 border border-yellow-500/20 p-4 rounded-xl font-mono text-xs">
+                    <div className="text-gray-400">Тематика: <span className="text-yellow-300 font-bold uppercase">Закулисье • Уровни и аномалии</span></div>
+                    <div className="text-gray-400">Администратор: <span className="text-white font-semibold">Veles PlayGame</span></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Liminal World Uptime & Real-Time Counter */}
+              <div className="liminal-card border-yellow-500/30 bg-gradient-to-r from-yellow-500/[0.08] via-black/70 to-lime-500/[0.05] rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden shadow-[0_0_30px_rgba(234,179,8,0.12)]">
+                <div className="absolute top-0 left-1/4 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-lime-500/10 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-yellow-500/20">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-yellow-400/20 border border-yellow-400/40 flex items-center justify-center shadow-[0_0_15px_rgba(234,179,8,0.3)] shrink-0">
+                        <Timer className="w-5 h-5 text-yellow-400 animate-pulse" />
                       </div>
                       <div>
-                        <h4 className={`text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${
-                          isActive ? "text-[#f27d26]" : "text-white"
-                        }`}>
-                          {tab.title}
-                        </h4>
-                        <p className="text-[11px] text-gray-400 mt-0.5 font-sans line-clamp-1">{tab.desc}</p>
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider font-mono">Время работы сервера</h2>
+                          <span className="w-2 h-2 rounded-full bg-yellow-400 animate-ping" />
+                        </div>
+                        <p className="text-xs text-yellow-200/70 font-mono">Отсчет времени с момента запуска мира Закулисья</p>
                       </div>
                     </div>
-                    
-                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 shrink-0 ${
-                      isActive ? "text-[#f27d26] rotate-180" : "text-gray-500 group-hover:text-gray-300"
-                    }`} />
 
-                    {/* Left glowing neon border line for active tab */}
-                    {isActive && (
-                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#f27d26]" />
+                    {liminalStartDateFormatted && (
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-yellow-500/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner" suppressHydrationWarning>
+                        <Calendar className="w-4 h-4 text-yellow-400 shrink-0" />
+                        <span suppressHydrationWarning>Время старта: <strong className="text-yellow-300 font-bold" suppressHydrationWarning>{liminalStartDateFormatted}</strong></span>
+                      </div>
                     )}
-                  </button>
-                );
-              })}
-            </div>
+                  </div>
 
-            {/* Right Column: Sliding Content Panel */}
-            <div className="lg:col-span-7 flex">
-              <div className="w-full glass-card border-white/5 bg-gradient-to-br from-white/[0.01] to-transparent p-6 rounded-2xl flex flex-col justify-between min-h-[220px] relative overflow-hidden">
-                <div className="absolute top-0 right-0 -m-16 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute bottom-0 left-0 -m-16 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
-
-                <div className="relative z-10 h-full flex flex-col justify-center">
-                  {activeAccordion === 0 && (
-                    <motion.div
-                      key="how-to-join"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="space-y-4"
-                    >
-                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
-                        <Tv className="w-5 h-5 text-[#f27d26]" />
-                        <span>Как играть? (Инструкция по установке)</span>
-                      </h3>
-                      <div className="space-y-2.5 text-xs text-gray-300 leading-relaxed">
-                        <div className="flex gap-3">
-                          <span className="text-[#f27d26] font-mono font-bold">1.</span>
-                          <p>Нажмите кнопку <span className="text-white font-semibold">«Скачать с Google Drive»</span> и загрузите архив сборки.</p>
-                        </div>
-                        <div className="flex gap-3">
-                          <span className="text-[#f27d26] font-mono font-bold">2.</span>
-                          <p>Откройте лаунчер Minecraft и создайте инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern</span>).</p>
-                        </div>
-                        <div className="flex gap-3">
-                          <span className="text-[#f27d26] font-mono font-bold">3.</span>
-                          <p className="bg-[#f27d26]/10 p-2.5 rounded-lg border border-[#f27d26]/30 text-white">
-                            <span className="text-[#f27d26] font-black uppercase tracking-wider">Главный шаг:</span> Распакуйте архив и <strong className="text-[#f27d26] font-black text-[13px] underline decoration-[#f27d26]/50">переместите все файлы в папку игры</strong> (папки <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">mods</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">config</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">kubejs</code> и остальные файлы перенесите в корневую директорию вашего инстанса/папку <code className="bg-black/60 px-1.5 py-0.5 rounded font-mono text-gray-200">.minecraft</code>).
-                          </p>
-                        </div>
-                        <div className="flex gap-3">
-                          <span className="text-[#f27d26] font-mono font-bold">4.</span>
-                          <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">213.152.43.53:25589</span>, запускайте игру и заходите в сетевую игру!</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeAccordion === 1 && (
-                    <motion.div
-                      key="responsive-host"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="space-y-4"
-                    >
-                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
-                        <Server className="w-5 h-5 text-[#f27d26]" />
-                        <span>Наш мощный и стабильный хостинг</span>
-                      </h3>
-                      <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
-                        <p>
-                          Мир сервера развернут на флагманском процессоре <span className="text-white font-bold">AMD Ryzen 9</span> с высокоскоростной серверной оперативной памятью DDR5 и сверхбыстрыми игровыми накопителями <span className="text-white font-bold">PCI-E NVMe SSD</span>.
-                        </p>
-                        <p>
-                          Благодаря этому, сервер стабильно удерживает <span className="text-emerald-400 font-bold">TPS 20.0</span> под любой нагрузкой. Карта не виснет, пинг минимальный, а ресурсы чанков прогружаются молниеносно, позволяя строить комплексные логистические цепочки и автоматизированные заводы без ущерба для вашего комфорта!
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeAccordion === 2 && (
-                    <motion.div
-                      key="modpack-info"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="space-y-4"
-                    >
-                      <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
-                        <Cpu className="w-5 h-5 text-[#f27d26]" />
-                        <span>TerraFirmaGreg: Modern</span>
-                      </h3>
-                      <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
-                        <p>
-                          <span className="text-white font-bold">TerraFirmaGreg: Modern</span> — это масштабное объединение реалистичного выживания <span className="text-[#f27d26] font-semibold">TerraFirmaCraft (TFC)</span> и сложнейшей индустриальной экосистемы <span className="text-[#f27d26] font-semibold">GregTech Modern</span> на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span>.
-                        </p>
-                        <p>
-                          Особенности сборки <span className="text-white font-bold">TerraFirmaGreg: Modern</span>:
-                        </p>
-                        <ul className="space-y-1.5 pl-4 list-disc text-gray-400">
-                          <li><span className="text-white font-semibold">Реалистичная геология и ковка</span> — поиск рудных жил по минералам на поверхности, промывка руды в лотках, обжиг керамики в ямах, литье сплавов и ручная ковка инструментов на наковальне.</li>
-                          <li><span className="text-white font-semibold">Суровое выживание</span> — учёт питательности рациона (белки, углеводы, жиры, фрукты, овощи), сезонов года, срока годности продуктов и климата.</li>
-                          <li><span className="text-white font-semibold">Эпохи технологического прогресса</span> — путь от каменных орудий и бронзового века до паровых машин, электрических эпох (LV, MV, HV, EV, IV, LuV, ZPM, UV) и термоядерного синтеза.</li>
-                          <li><span className="text-white font-semibold">Глубокая химия и автоматизация</span> — сотни химических реакций, переработка нефти, полимеров и создание сложных микросхем.</li>
-                          <li><span className="text-white font-semibold">Интерактивная книга квестов</span> — детальные цепочки заданий, которые помогут вам шаг за шагом освоить все тонкости выживания и механик.</li>
-                        </ul>
-                        <p>
-                          Погрузитесь в один из самых глубоких, проработанных и хардкорных технологических миров Minecraft вместе с сообществом Veles PlayGame!
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {activeAccordion === null && (
-                    <div className="text-center py-8 text-gray-500 font-sans animate-pulse">
-                      <ChevronDown className="w-8 h-8 text-white/20 mx-auto mb-2 animate-bounce" />
-                      Выберите вкладку слева, чтобы открыть подробную информацию
+                  {/* Uptime Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                    {/* Days */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/60 border border-yellow-500/20 hover:border-yellow-400/50 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-yellow-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(234,179,8,0.3)]" suppressHydrationWarning>
+                        {String(liminalDays).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(liminalDays, 'День', 'Дня', 'Дней')}
+                      </span>
                     </div>
-                  )}
+
+                    {/* Hours */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/60 border border-yellow-500/20 hover:border-yellow-400/50 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                        {String(liminalHours).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(liminalHours, 'Час', 'Часа', 'Часов')}
+                      </span>
+                    </div>
+
+                    {/* Minutes */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/60 border border-yellow-500/20 hover:border-yellow-400/50 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-yellow-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                        {String(liminalMinutes).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(liminalMinutes, 'Минута', 'Минуты', 'Минут')}
+                      </span>
+                    </div>
+
+                    {/* Seconds */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/60 border border-yellow-500/20 hover:border-lime-400/50 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-lime-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-lime-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(163,230,53,0.3)]" suppressHydrationWarning>
+                        {String(liminalSeconds).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(liminalSeconds, 'Секунда', 'Секунды', 'Секунд')}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Liminal Connection & Modpack Section */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                
+                {/* IP Addresses Column */}
+                <div className="lg:col-span-7 liminal-card rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden border-yellow-500/30">
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-xl bg-yellow-400/20 border border-yellow-400/30 flex items-center justify-center text-yellow-400 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
+                        <Server className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-black text-white tracking-wide uppercase font-mono">Подключение к серверу</h2>
+                        <p className="text-xs text-yellow-300/70 font-mono">Выберите адрес для входа в игру</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Primary IP */}
+                      <div className="relative group/btn">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400 font-bold uppercase tracking-wider mb-2 pl-1">
+                          <span className="text-yellow-400">Основной IP адрес</span>
+                          <span className="text-gray-500">Порт: 25598</span>
+                        </div>
+                        <button 
+                          onClick={() => handleCopy('213.152.43.88:25598')}
+                          className="w-full flex items-center justify-between p-4 bg-black/70 hover:bg-black/90 border border-yellow-500/30 hover:border-yellow-400/60 rounded-xl transition-all relative group"
+                        >
+                          <span className="font-mono text-lg md:text-xl text-yellow-300 font-bold tracking-wide group-hover:text-yellow-200 transition-colors">
+                            213.152.43.88:25598
+                          </span>
+                          {copiedIp === '213.152.43.88:25598' ? (
+                            <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/30">
+                              <CheckCircle2 className="w-4 h-4" /> Скопировано
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2 text-yellow-400 group-hover:text-yellow-300 transition-colors text-xs font-bold uppercase tracking-wider bg-yellow-500/10 px-3 py-1.5 rounded-lg border border-yellow-500/30">
+                              <Copy className="w-4 h-4" /> Копировать
+                            </span>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Alternative IP */}
+                      <div className="relative group/btn pt-2">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-gray-400 font-bold uppercase tracking-wider mb-2 pl-1">
+                          <span className="text-lime-400">Альтернативный адрес</span>
+                          <span className="text-gray-500">Доменный узел</span>
+                        </div>
+                        <button 
+                          onClick={() => handleCopy('danunaxuynixuyassebe.okak.skin')}
+                          className="w-full flex items-center justify-between p-4 bg-black/70 hover:bg-black/90 border border-lime-500/30 hover:border-lime-400/60 rounded-xl transition-all relative group"
+                        >
+                          <span className="font-mono text-sm sm:text-base md:text-lg text-lime-300 font-bold tracking-wide group-hover:text-lime-200 transition-colors truncate mr-2">
+                            danunaxuynixuyassebe.okak.skin
+                          </span>
+                          {copiedIp === 'danunaxuynixuyassebe.okak.skin' ? (
+                            <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/30 shrink-0">
+                              <CheckCircle2 className="w-4 h-4" /> Скопировано
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2 text-lime-400 group-hover:text-lime-300 transition-colors text-xs font-bold uppercase tracking-wider bg-lime-500/10 px-3 py-1.5 rounded-lg border border-lime-500/30 shrink-0">
+                              <Copy className="w-4 h-4" /> Копировать
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modpack Download Column */}
+                <div className="lg:col-span-5 liminal-card rounded-2xl p-6 md:p-8 flex flex-col justify-between border-yellow-500/30 bg-yellow-500/[0.02]">
+                  <div className="flex flex-col h-full">
+                    <h2 className="text-xl font-black text-white tracking-wide uppercase font-mono mb-2 flex items-center justify-between">
+                      <span>Модпак Закулисья</span>
+                      <Download className="w-5 h-5 text-yellow-400 animate-bounce" />
+                    </h2>
+                    
+                    <div className="mb-6">
+                      <div className="text-sm font-bold text-yellow-400 mb-1 font-mono">Liminal Industries Modpack</div>
+                      <div className="text-xs text-gray-400 leading-relaxed mb-4">
+                        Полная сборка со всеми модами, звуками, кастомными текстурами и генерацией Закулисья.
+                      </div>
+                      <div className="p-3.5 rounded-xl bg-black/50 border border-yellow-500/20 text-xs text-yellow-200/90 leading-relaxed font-mono">
+                        <span className="text-yellow-400 font-bold uppercase">Установка:</span> Скачайте архив сборки и <strong className="text-white underline">переместите все файлы в папку игры</strong> (вашего инстанса Minecraft).
+                      </div>
+                    </div>
+
+                    <div className="mt-auto">
+                      <a 
+                        href="https://drive.google.com/file/d/1C6LUgjkFzJDdoum9aTIccmcPN6gc_Wf4/view?usp=drivesdk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 bg-yellow-500/20 hover:bg-yellow-500/30 border border-yellow-500/40 hover:border-yellow-400 rounded-xl transition-all group shadow-[0_0_20px_rgba(234,179,8,0.15)]"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-yellow-400/30 flex items-center justify-center shrink-0 text-yellow-300">
+                          <Download className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-bold text-white group-hover:text-yellow-300 transition-colors uppercase font-mono">
+                            Скачать с Google Drive
+                          </div>
+                          <div className="text-[11px] text-gray-400 truncate">Liminal Industries • Полный архив</div>
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-white transition-all shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </motion.div>
+          ) : (
+            
+            /* ========================================================================= */
+            /* SERVER 1: TERRAFIRMAGREG MODERN (EXISTING HARDCORE INDUSTRIAL STYLE)      */
+            /* ========================================================================= */
+            <motion.div
+              key="tfg-server"
+              initial={{ opacity: 0, scale: 0.98, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98, y: -15 }}
+              transition={{ duration: 0.4 }}
+              className="flex-1 flex flex-col"
+            >
+              
+              {/* Promo Banner for Second Server */}
+              <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-yellow-500/15 via-black/60 to-black/60 border border-yellow-500/30 text-xs sm:text-sm text-gray-200 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="p-2 rounded-xl bg-yellow-500/20 text-yellow-400 shrink-0">
+                    <Eye className="w-5 h-5 animate-pulse" />
+                  </span>
+                  <div>
+                    <span className="font-black text-yellow-400 uppercase tracking-wide">🎉 Открытие второго сервера!</span>{' '}
+                    <span>Запущен второй сервер по модпаку <strong className="text-white">Liminal Industries (Закулисье)</strong>!</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveServer('liminal')}
+                  className="px-4 py-2 rounded-xl bg-yellow-400 text-black font-bold text-xs uppercase tracking-wider hover:bg-yellow-300 transition-all shrink-0 flex items-center gap-1.5 shadow-[0_0_15px_rgba(234,179,8,0.4)]"
+                >
+                  <span>Перейти на Сервер 2</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* TFG Header Section */}
+              <div className="mb-14">
+                <div className="mb-6">
+                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#f27d26]/10 border border-[#f27d26]/20 rounded-full">
+                    <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow" />
+                    <span className="text-[10px] font-bold text-[#f27d26] tracking-widest uppercase font-mono">Сервер 1 • Штатный режим • Онлайн</span>
+                  </span>
+                </div>
+
+                <h1 className="text-5xl md:text-7xl lg:text-[80px] font-black tracking-tighter uppercase mb-6 glow-amber text-[#f27d26]">
+                  TERRAFIRMAGREG
+                </h1>
+
+                <div className="flex flex-col md:flex-row md:items-start justify-end gap-6">
+                  <div className="flex flex-col items-start md:items-end gap-3 shrink-0 pt-1">
+                    <div className="flex flex-col md:items-end">
+                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Рекомендуемый клиент</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl md:text-3xl font-black text-[#f27d26] tracking-tight uppercase">Forge 1.20.1</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-mono">
+                      <span className="text-gray-400">Формат:</span> 
+                      <span className="text-white font-bold">Выживание / Квесты</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-mono">
+                      <span className="text-gray-500">Администратор:</span> 
+                      <span className="text-gray-300">Veles PlayGame</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* TFG World Uptime & Start Time */}
+              <div className="glass-card border-[#f27d26]/30 bg-gradient-to-r from-[#f27d26]/[0.08] via-black/50 to-[#3b82f6]/[0.08] rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden shadow-[0_0_30px_rgba(242,125,38,0.1)]">
+                <div className="absolute top-0 left-1/4 w-48 h-48 bg-[#f27d26]/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+                
+                <div className="relative z-10">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#f27d26]/20 border border-[#f27d26]/40 flex items-center justify-center shadow-[0_0_15px_rgba(242,125,38,0.3)] shrink-0">
+                        <Timer className="w-5 h-5 text-[#f27d26] animate-pulse" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-wider">Время жизни текущего мира</h2>
+                          <span className="w-2 h-2 rounded-full bg-[#f27d26] pulse-glow" />
+                        </div>
+                        <p className="text-xs text-gray-400">Сколько времени прошло с момента старта игрового мира</p>
+                      </div>
+                    </div>
+
+                    {startDateFormatted && (
+                      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-black/60 border border-[#f27d26]/30 text-xs text-gray-300 font-mono self-start sm:self-auto shadow-inner" suppressHydrationWarning>
+                        <Calendar className="w-4 h-4 text-[#f27d26] shrink-0" />
+                        <span suppressHydrationWarning>Время старта мира: <strong className="text-white font-bold" suppressHydrationWarning>{startDateFormatted}</strong></span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Uptime Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                    {/* Days */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-[#f27d26] tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(242,125,38,0.3)]" suppressHydrationWarning>
+                        {String(days).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(days, 'День', 'Дня', 'Дней')}
+                      </span>
+                    </div>
+
+                    {/* Hours */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                        {String(hours).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(hours, 'Час', 'Часа', 'Часов')}
+                      </span>
+                    </div>
+
+                    {/* Minutes */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-[#f27d26]/40 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#f27d26]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-white tracking-tight relative z-10" suppressHydrationWarning>
+                        {String(minutes).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(minutes, 'Минута', 'Минуты', 'Минут')}
+                      </span>
+                    </div>
+
+                    {/* Seconds */}
+                    <div className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-xl bg-black/50 border border-white/10 hover:border-blue-500/40 transition-all group relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="font-mono text-4xl sm:text-5xl md:text-6xl font-black text-blue-400 tracking-tight relative z-10 drop-shadow-[0_0_12px_rgba(59,130,246,0.3)]" suppressHydrationWarning>
+                        {String(seconds).padStart(2, '0')}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-bold text-gray-400 uppercase tracking-widest mt-2 relative z-10 font-mono" suppressHydrationWarning>
+                        {getPluralWord(seconds, 'Секунда', 'Секунды', 'Секунд')}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400 font-mono bg-black/40 rounded-xl px-4 py-3 border border-white/5" suppressHydrationWarning>
+                    <div className="flex items-center gap-2" suppressHydrationWarning>
+                      <Sparkles className="w-4 h-4 text-[#f27d26]" />
+                      <span suppressHydrationWarning>Состояние мира: <strong className="text-gray-200 font-semibold">Сервер активен • Мир успешно развивается</strong></span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-gray-400" suppressHydrationWarning>
+                      <Clock className="w-3.5 h-3.5 text-[#f27d26]" />
+                      <span suppressHydrationWarning>Старт мира: <span className="text-[#f27d26] font-bold" suppressHydrationWarning>{startDateFormatted || 'Загрузка...'}</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* TFG Connection & Modpack */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                
+                {/* IP Address */}
+                <div className="lg:col-span-7 glass-card border-[#3b82f6]/20 bg-gradient-to-br from-[#3b82f6]/[0.05] to-transparent rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden">
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-10 h-10 rounded-xl bg-[#3b82f6]/20 border border-[#3b82f6]/30 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                        <Server className="w-5 h-5 text-[#3b82f6]" />
+                      </div>
+                      <h2 className="text-xl font-bold text-white tracking-wide uppercase">Подключение</h2>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="relative group/btn">
+                        <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-2 pl-1 relative">IP Адрес сервера</div>
+                        <button 
+                          onClick={() => handleCopy('213.152.43.53:25589')}
+                          className="w-full flex items-center justify-between p-4 bg-black/50 hover:bg-black/70 border border-blue-500/20 hover:border-blue-500/40 rounded-xl transition-all relative"
+                        >
+                          <span className="font-mono text-lg md:text-xl text-white font-bold tracking-wide group-hover/btn:text-blue-400 transition-colors">
+                            213.152.43.53:25589
+                          </span>
+                          {copiedIp === '213.152.43.53:25589' ? (
+                            <span className="flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-500/10 px-3 py-1.5 rounded-lg border border-green-500/20">
+                              <CheckCircle2 className="w-4 h-4" /> Скопировано
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2 text-blue-400 group-hover/btn:text-blue-300 transition-colors text-xs font-bold uppercase tracking-wider bg-blue-500/10 px-3 py-1.5 rounded-lg border border-blue-500/20">
+                              <Copy className="w-4 h-4" /> Копировать
+                            </span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Modpack Download */}
+                <div className="lg:col-span-5 glass-card rounded-2xl p-6 md:p-8 border-[#f27d26]/20 bg-[#f27d26]/[0.02]">
+                  <div className="h-full flex flex-col">
+                    <h2 className="text-xl font-bold text-white tracking-wide uppercase mb-2 flex items-center justify-between">
+                      <span>Запуск Игры</span>
+                      <Settings className="w-5 h-5 text-[#f27d26] float-slow" />
+                    </h2>
+                    
+                    <div className="mb-8">
+                      <div className="text-sm font-bold text-white mb-1">TerraFirmaGreg: Modern</div>
+                      <div className="text-xs text-gray-400 leading-relaxed mb-3">
+                        Неофициальный сервер на базе хардкорной сборки TerraFirmaGreg: Modern (Forge 1.20.1).
+                      </div>
+                      <div className="p-3 rounded-xl bg-black/40 border border-[#f27d26]/20 text-[11px] text-gray-300 leading-relaxed">
+                        <span className="text-[#f27d26] font-bold">Как играть:</span> Скачайте архив и <span className="text-white font-semibold">переместите все файлы в папку игры</span> (инстанса Minecraft).
+                      </div>
+                    </div>
+
+                    <div className="mt-auto">
+                      <a 
+                        href="https://drive.google.com/file/d/11NGyYHSN86LjzchJ4GLyUo3uC4Nzsge9/view?usp=drivesdk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 bg-[#f27d26]/10 hover:bg-[#f27d26]/20 border border-[#f27d26]/30 hover:border-[#f27d26]/50 rounded-xl transition-all group"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center shrink-0">
+                          <Download className="w-5 h-5 text-[#f27d26]" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-bold text-white group-hover:text-[#f27d26] transition-colors uppercase">
+                            Скачать с Google Drive
+                          </div>
+                        </div>
+                        <ExternalLink className="w-4 h-4 text-gray-500 group-hover:text-white transition-all shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* TFG Accordion Tabs */}
+              <div className="mb-12 space-y-4">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-2.5 h-6 bg-[#f27d26] rounded-full shadow-[0_0_15px_rgba(242,125,38,0.4)]" />
+                  <h2 className="text-xl font-black text-white tracking-wide uppercase">Информация о сервере</h2>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Left Column: Tab Selectors */}
+                  <div className="lg:col-span-5 flex flex-col gap-3">
+                    {[
+                      { id: 0, title: "Как играть?", icon: Tv, desc: "Переместите все файлы в папку игры" },
+                      { id: 1, title: "Отзывчивый хост", icon: Server, desc: "Характеристики нашего мощного железа" },
+                      { id: 2, title: "Сборка TerraFirmaGreg Modern", icon: Cpu, desc: "Реалистичная геология TFC и технологии GregTech" }
+                    ].map((tab) => {
+                      const IconComponent = tab.icon;
+                      const isActive = tfgAccordion === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => setTfgAccordion(isActive ? null : tab.id)}
+                          className={`w-full text-left p-4 rounded-xl border transition-all duration-300 flex items-center justify-between group relative overflow-hidden ${
+                            isActive 
+                              ? "bg-[#f27d26]/10 border-[#f27d26]/40 shadow-[0_0_20px_rgba(242,125,38,0.05)]" 
+                              : "bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10"
+                          }`}
+                        >
+                          <div className="flex items-center gap-4 relative z-10">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                              isActive ? "bg-[#f27d26]/20 text-[#f27d26]" : "bg-white/5 text-gray-400 group-hover:text-white"
+                            }`}>
+                              <IconComponent className="w-5 h-5" />
+                            </div>
+                            <div>
+                              <h4 className={`text-sm font-bold uppercase tracking-wider transition-colors duration-300 ${
+                                isActive ? "text-[#f27d26]" : "text-white"
+                              }`}>
+                                {tab.title}
+                              </h4>
+                              <p className="text-[11px] text-gray-400 mt-0.5 font-sans line-clamp-1">{tab.desc}</p>
+                            </div>
+                          </div>
+                          
+                          <ChevronDown className={`w-5 h-5 transition-transform duration-300 shrink-0 ${
+                            isActive ? "text-[#f27d26] rotate-180" : "text-gray-500 group-hover:text-gray-300"
+                          }`} />
+
+                          {isActive && (
+                            <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#f27d26]" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Right Column: Content Panel */}
+                  <div className="lg:col-span-7 flex">
+                    <div className="w-full glass-card border-white/5 bg-gradient-to-br from-white/[0.01] to-transparent p-6 rounded-2xl flex flex-col justify-between min-h-[220px] relative overflow-hidden">
+                      <div className="relative z-10 h-full flex flex-col justify-center">
+                        {tfgAccordion === 0 && (
+                          <motion.div
+                            key="tfg-how-to"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4"
+                          >
+                            <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                              <Tv className="w-5 h-5 text-[#f27d26]" />
+                              <span>Как играть? (Инструкция по установке)</span>
+                            </h3>
+                            <div className="space-y-2.5 text-xs text-gray-300 leading-relaxed">
+                              <div className="flex gap-3">
+                                <span className="text-[#f27d26] font-mono font-bold">1.</span>
+                                <p>Нажмите кнопку <span className="text-white font-semibold">«Скачать с Google Drive»</span> и загрузите архив сборки.</p>
+                              </div>
+                              <div className="flex gap-3">
+                                <span className="text-[#f27d26] font-mono font-bold">2.</span>
+                                <p>Откройте лаунчер Minecraft и создайте инстанс версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span> (сборка <span className="text-white font-semibold">TerraFirmaGreg: Modern</span>).</p>
+                              </div>
+                              <div className="flex gap-3">
+                                <span className="text-[#f27d26] font-mono font-bold">3.</span>
+                                <p className="bg-[#f27d26]/10 p-2.5 rounded-lg border border-[#f27d26]/30 text-white">
+                                  <span className="text-[#f27d26] font-black uppercase tracking-wider">Главный шаг:</span> Распакуйте архив и <strong className="text-[#f27d26] font-black text-[13px] underline decoration-[#f27d26]/50">переместите все файлы в папку игры</strong> (папки <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">mods</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">config</code>, <code className="bg-black/60 px-1.5 py-0.5 rounded text-[#f27d26] font-mono">kubejs</code> и остальные файлы перенесите в корневую директорию вашего инстанса/папку <code className="bg-black/60 px-1.5 py-0.5 rounded font-mono text-gray-200">.minecraft</code>).
+                                </p>
+                              </div>
+                              <div className="flex gap-3">
+                                <span className="text-[#f27d26] font-mono font-bold">4.</span>
+                                <p>Скопируйте IP <span className="text-[#f27d26] font-mono font-semibold">213.152.43.53:25589</span>, запускайте игру и заходите в сетевую игру!</p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {tfgAccordion === 1 && (
+                          <motion.div
+                            key="tfg-host"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4"
+                          >
+                            <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                              <Server className="w-5 h-5 text-[#f27d26]" />
+                              <span>Наш мощный и стабильный хостинг</span>
+                            </h3>
+                            <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
+                              <p>
+                                Мир сервера развернут на флагманском процессоре <span className="text-white font-bold">AMD Ryzen 9</span> с высокоскоростной серверной оперативной памятью DDR5 и сверхбыстрыми игровыми накопителями <span className="text-white font-bold">PCI-E NVMe SSD</span>.
+                              </p>
+                              <p>
+                                Благодаря этому, сервер стабильно удерживает <span className="text-emerald-400 font-bold">TPS 20.0</span> под любой нагрузкой. Карта не виснет, пинг минимальный, а ресурсы чанков прогружаются молниеносно, позволяя строить комплексные логистические цепочки и автоматизированные заводы без ущерба для вашего комфорта!
+                              </p>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {tfgAccordion === 2 && (
+                          <motion.div
+                            key="tfg-modpack"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="space-y-4"
+                          >
+                            <h3 className="text-base font-bold text-white border-b border-white/5 pb-2 uppercase tracking-wider flex items-center gap-2">
+                              <Cpu className="w-5 h-5 text-[#f27d26]" />
+                              <span>TerraFirmaGreg: Modern</span>
+                            </h3>
+                            <div className="text-xs text-gray-300 space-y-3 leading-relaxed">
+                              <p>
+                                <span className="text-white font-bold">TerraFirmaGreg: Modern</span> — это масштабное объединение реалистичного выживания <span className="text-[#f27d26] font-semibold">TerraFirmaCraft (TFC)</span> и сложнейшей индустриальной экосистемы <span className="text-[#f27d26] font-semibold">GregTech Modern</span> на версии <span className="text-[#f27d26] font-black text-[13px] uppercase tracking-wide">Forge 1.20.1</span>.
+                              </p>
+                              <p>Особенности сборки <span className="text-white font-bold">TerraFirmaGreg: Modern</span>:</p>
+                              <ul className="space-y-1.5 pl-4 list-disc text-gray-400">
+                                <li><span className="text-white font-semibold">Реалистичная геология и ковка</span> — поиск рудных жил по минералам на поверхности, промывка руды в лотках, обжиг керамики в ямах, литье сплавов и ручная ковка инструментов на наковальне.</li>
+                                <li><span className="text-white font-semibold">Суровое выживание</span> — учёт питательности рациона, сезонов года, срока годности продуктов и климата.</li>
+                                <li><span className="text-white font-semibold">Эпохи технологического прогресса</span> — путь от каменных орудий и бронзового века до паровых машин, электрических эпох (LV, MV, HV, EV, IV, LuV, ZPM, UV) и термоядерного синтеза.</li>
+                                <li><span className="text-white font-semibold">Интерактивная книга квестов</span> — детальные цепочки заданий, которые помогут вам шаг за шагом освоить все тонкости выживания и механик.</li>
+                              </ul>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {tfgAccordion === null && (
+                          <div className="text-center py-8 text-gray-500 font-sans animate-pulse">
+                            <ChevronDown className="w-8 h-8 text-white/20 mx-auto mb-2 animate-bounce" />
+                            Выберите вкладку слева, чтобы открыть подробную информацию
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </motion.div>
+          )}
+
+        </AnimatePresence>
+
+        {/* Unified Community Links Section (Discord, Telegram, YouTube, TikTok) */}
+        <div className={`relative rounded-3xl p-6 md:p-10 border transition-all duration-500 overflow-hidden mb-8 ${
+          isLiminal ? 'border-yellow-500/20 bg-black/60' : 'border-white/10 bg-black/40'
+        }`}>
+          <div className="flex flex-col items-center justify-center mb-8 text-center">
+            <div className={`inline-flex items-center justify-center p-3 rounded-2xl mb-4 ring-1 shadow-lg ${
+              isLiminal ? 'bg-yellow-500/10 ring-yellow-500/30 text-yellow-400' : 'bg-white/5 ring-white/10 text-[#f27d26]'
+            }`}>
+              <Users className="w-6 h-6" />
             </div>
-          </div>
-        </motion.div>
-
-        {/* Community Links */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="relative rounded-3xl p-6 md:p-10 border border-white/10 overflow-hidden"
-        >
-          {/* Background gradient for the community section */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-[#f27d26]/[0.05] -z-10" />
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-          <div className="flex flex-col items-center justify-center mb-10 text-center">
-             <div className="inline-flex items-center justify-center p-3 bg-white/5 rounded-2xl mb-5 ring-1 ring-white/10 shadow-lg shadow-black/20">
-               <Users className="w-6 h-6 text-[#f27d26]" />
-             </div>
-             <h2 className="text-2xl md:text-3xl font-black text-white tracking-wide uppercase mb-3">Сообщество сервера</h2>
-             <p className="text-sm md:text-base text-gray-400 max-w-lg mx-auto leading-relaxed">
-               Присоединяйтесь к нашему дружному комьюнити! Мы всегда рады новым игрокам, помогаем с модами и вместе покоряем эпохи развития.
-             </p>
+            <h2 className="text-2xl md:text-3xl font-black text-white tracking-wide uppercase mb-2">
+              Сообщество серверов Veles PlayGame
+            </h2>
+            <p className="text-sm text-gray-400 max-w-lg mx-auto leading-relaxed">
+              Общий Discord и Telegram для обоих серверов. Задавайте вопросы по сборкам, ищите союзников и делитесь скриншотами выживания!
+            </p>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
-            
             {/* Discord */}
             <a 
               href="https://discord.gg/cd2utAp2n" 
               target="_blank" 
               rel="noreferrer noopener"
-              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] hover:-translate-y-1 transition-all duration-300 group"
             >
               <div className="flex items-center justify-between">
                 <div className="w-12 h-12 rounded-xl bg-[#5865F2]/20 flex items-center justify-center shrink-0 ring-1 ring-[#5865F2]/30 group-hover:ring-[#5865F2]/60 transition-all">
                   <svg className="w-6 h-6 text-[#5865F2] group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/>
-                </svg>
+                  </svg>
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </div>
-            <div>
-              <div className="text-base font-bold text-gray-200 mb-1">Discord</div>
-              <div className="text-xs text-gray-400">Общение и тех-поддержка</div>
-            </div>
-          </a>
-
-          {/* Telegram */}
-          <a 
-            href="https://t.me/veles_playgame_s" 
-            target="_blank" 
-            rel="noreferrer noopener"
-            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#229ED9]/50 hover:bg-[#229ED9]/10 hover:shadow-[0_0_20px_rgba(34,158,217,0.15)] hover:-translate-y-1 transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-[#229ED9]/20 flex items-center justify-center shrink-0 ring-1 ring-[#229ED9]/30 group-hover:ring-[#229ED9]/60 transition-all">
-                <svg className="w-6 h-6 text-[#229ED9] group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-                </svg>
+              <div>
+                <div className="text-base font-bold text-gray-200 mb-1">Discord</div>
+                <div className="text-xs text-gray-400">Общение и тех-поддержка</div>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </div>
-            <div>
-              <div className="text-base font-bold text-gray-200 mb-1">Telegram</div>
-              <div className="text-xs text-gray-400">Мгновенные уведомления</div>
-            </div>
-          </a>
+            </a>
 
-          {/* YouTube */}
-          <a 
-            href="https://youtube.com/@veles_playgame?si=oty0sDUU230sQAA3" 
-            target="_blank" 
-            rel="noreferrer noopener"
-            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:-translate-y-1 transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0 ring-1 ring-red-500/30 group-hover:ring-red-500/60 transition-all">
-                <Youtube className="w-6 h-6 text-red-500 group-hover:scale-110 transition-transform duration-300" />
+            {/* Telegram */}
+            <a 
+              href="https://t.me/veles_playgame_s" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#229ED9]/50 hover:bg-[#229ED9]/10 hover:shadow-[0_0_20px_rgba(34,158,217,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#229ED9]/20 flex items-center justify-center shrink-0 ring-1 ring-[#229ED9]/30 group-hover:ring-[#229ED9]/60 transition-all">
+                  <svg className="w-6 h-6 text-[#229ED9] group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                  </svg>
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </div>
-            <div>
-              <div className="text-base font-bold text-gray-200 mb-1">YouTube</div>
-              <div className="text-xs text-gray-400">Стримы и видеоконтент</div>
-            </div>
-          </a>
-
-          {/* TikTok */}
-          <a 
-            href="https://www.tiktok.com/@_veles.playgame_" 
-            target="_blank" 
-            rel="noreferrer noopener"
-            className="flex flex-col gap-4 p-5 rounded-2xl bg-black/40 border border-white/5 hover:border-[#00f2fe]/50 hover:bg-[#00f2fe]/10 hover:shadow-[0_0_20px_rgba(0,242,254,0.15)] hover:-translate-y-1 transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-xl bg-[#00f2fe]/20 flex items-center justify-center shrink-0 ring-1 ring-[#00f2fe]/30 group-hover:ring-[#00f2fe]/60 transition-all">
-                <Video className="w-6 h-6 text-[#00f2fe] group-hover:scale-110 transition-transform duration-300" />
+              <div>
+                <div className="text-base font-bold text-gray-200 mb-1">Telegram</div>
+                <div className="text-xs text-gray-400">Мгновенные уведомления</div>
               </div>
-              <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
-            </div>
-            <div>
-              <div className="text-base font-bold text-gray-200 mb-1">TikTok</div>
-              <div className="text-xs text-gray-400">Короткие видео</div>
-            </div>
-          </a>
+            </a>
 
+            {/* YouTube */}
+            <a 
+              href="https://youtube.com/@veles_playgame?si=oty0sDUU230sQAA3" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-red-500/50 hover:bg-red-500/10 hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center shrink-0 ring-1 ring-red-500/30 group-hover:ring-red-500/60 transition-all">
+                  <Youtube className="w-6 h-6 text-red-500 group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+              </div>
+              <div>
+                <div className="text-base font-bold text-gray-200 mb-1">YouTube</div>
+                <div className="text-xs text-gray-400">Стримы и видеоконтент</div>
+              </div>
+            </a>
+
+            {/* TikTok */}
+            <a 
+              href="https://www.tiktok.com/@_veles.playgame_" 
+              target="_blank" 
+              rel="noreferrer noopener"
+              className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#00f2fe]/50 hover:bg-[#00f2fe]/10 hover:shadow-[0_0_20px_rgba(0,242,254,0.15)] hover:-translate-y-1 transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-[#00f2fe]/20 flex items-center justify-center shrink-0 ring-1 ring-[#00f2fe]/30 group-hover:ring-[#00f2fe]/60 transition-all">
+                  <Video className="w-6 h-6 text-[#00f2fe] group-hover:scale-110 transition-transform duration-300" />
+                </div>
+                <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+              </div>
+              <div>
+                <div className="text-base font-bold text-gray-200 mb-1">TikTok</div>
+                <div className="text-xs text-gray-400">Короткие видео</div>
+              </div>
+            </a>
           </div>
-        </motion.div>
+        </div>
 
         {/* Footer */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-auto pt-8 text-center"
-        >
-          <div className="inline-block px-4 py-2 rounded-full border border-[#f27d26]/10 bg-[#f27d26]/[0.02]">
-             <p className="text-[11px] text-gray-500 font-mono">
-               Разработка и запуск © 2026. Сервер под управлением <span className="text-gray-400 font-semibold">Veles PlayGame</span>
-             </p>
+        <footer className="mt-auto pt-4 pb-6 text-center">
+          <div className="inline-block px-4 py-2 rounded-full border border-white/10 bg-black/40">
+            <p className="text-[11px] text-gray-400 font-mono">
+              Игровые серверы <span className="text-white font-semibold">TerraFirmaGreg: Modern</span> & <span className="text-yellow-400 font-semibold">Liminal Industries</span> • Сообщество <span className="text-gray-300 font-semibold">Veles PlayGame</span>
+            </p>
           </div>
-          <p className="text-[9px] text-gray-600 mt-3 font-mono opacity-60">
-            Сайт для сообщества TechEvoDiscovery. Все права на Minecraft принадлежат Mojang AB.
+          <p className="text-[9px] text-gray-600 mt-2 font-mono opacity-70">
+            Сайт для игрового сообщества. Все права на Minecraft принадлежат Mojang AB.
           </p>
-        </motion.div>
+        </footer>
 
       </div>
     </main>

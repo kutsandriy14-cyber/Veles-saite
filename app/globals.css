@@ -12,6 +12,40 @@ body {
               #07090e;
 }
 
+.liminal-atmosphere {
+  background: radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.18) 0%, transparent 60%),
+              radial-gradient(circle at 15% 75%, rgba(132, 204, 22, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 85% 85%, rgba(202, 138, 4, 0.1) 0%, transparent 50%),
+              #090b07;
+}
+
+.liminal-card {
+  background: rgba(18, 20, 14, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(234, 179, 8, 0.18);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.liminal-card:hover {
+  border-color: rgba(234, 179, 8, 0.45);
+  box-shadow: 0 12px 40px 0 rgba(234, 179, 8, 0.08), 0 0 0 1px rgba(234, 179, 8, 0.2);
+}
+
+.glow-liminal {
+  text-shadow: 0 0 20px rgba(234, 179, 8, 0.7), 0 0 40px rgba(202, 138, 4, 0.3);
+}
+
+.liminal-hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(234, 179, 8, 0.15),
+    rgba(234, 179, 8, 0.15) 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
 .glass-card {
   background: rgba(13, 16, 23, 0.45);
   backdrop-filter: blur(16px);
@@ -74,4 +108,58 @@ body {
 
 .pulse-glow {
   animation: pulse-ring 3s ease-in-out infinite;
+}
+
+@keyframes flicker-5s {
+  0%, 82%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 20px rgba(234, 179, 8, 0.7), 0 0 40px rgba(202, 138, 4, 0.3);
+  }
+  84% {
+    opacity: 0.15;
+    text-shadow: none;
+  }
+  86% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(234, 179, 8, 0.9), 0 0 50px rgba(202, 138, 4, 0.5);
+  }
+  89% {
+    opacity: 0.08;
+    text-shadow: none;
+  }
+  92% {
+    opacity: 0.95;
+    text-shadow: 0 0 22px rgba(234, 179, 8, 0.7);
+  }
+  95% {
+    opacity: 0.2;
+    text-shadow: none;
+  }
+  98% {
+    opacity: 1;
+    text-shadow: 0 0 25px rgba(234, 179, 8, 0.8), 0 0 45px rgba(202, 138, 4, 0.4);
+  }
+}
+
+.animate-flicker-5s {
+  animation: flicker-5s 5s ease-in-out infinite;
+}
+
+@keyframes blink-text-5s {
+  0%, 84%, 100% {
+    opacity: 1;
+  }
+  86%, 88% {
+    opacity: 0.1;
+  }
+  90%, 93% {
+    opacity: 1;
+  }
+  95%, 97% {
+    opacity: 0.1;
+  }
+}
+
+.animate-blink-5s {
+  animation: blink-text-5s 5s infinite;
 }
