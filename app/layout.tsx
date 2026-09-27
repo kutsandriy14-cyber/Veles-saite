@@ -2,8 +2,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'TerraFirmaGreg: Modern & Liminal Industries | Veles PlayGame',
-  description: 'Игровые серверы Minecraft: хардкорный TerraFirmaGreg: Modern и новый сервер Закулисья Liminal Industries от сообщества Veles PlayGame.',
+  title: 'TerraFirmaGreg: Modern & Reclamation: Hardcore Edition | Veles PlayGame',
+  description: 'Игровые серверы Minecraft: хардкорный TerraFirmaGreg: Modern и сервер Reclamation: Hardcore Edition от сообщества Veles PlayGame.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

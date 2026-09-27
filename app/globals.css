@@ -4,71 +4,57 @@ body {
   background-color: #05070a;
   color: #f3f4f6;
   font-family: inherit;
+  overflow-x: hidden;
 }
 
+/* Atmosphere for Server 1 (TerraFirmaGreg: Modern) */
 .atmosphere {
-  background: radial-gradient(circle at 50% 0%, rgba(242, 125, 38, 0.18) 0%, transparent 65%),
+  background: radial-gradient(circle at 50% 0%, rgba(242, 125, 38, 0.16) 0%, transparent 65%),
               radial-gradient(circle at 100% 100%, rgba(38, 153, 242, 0.08) 0%, transparent 50%),
               #07090e;
 }
 
-.liminal-atmosphere {
-  background: radial-gradient(circle at 50% 0%, rgba(234, 179, 8, 0.18) 0%, transparent 60%),
-              radial-gradient(circle at 15% 75%, rgba(132, 204, 22, 0.08) 0%, transparent 50%),
-              radial-gradient(circle at 85% 85%, rgba(202, 138, 4, 0.1) 0%, transparent 50%),
-              #090b07;
+/* Atmosphere for Server 2 (Reclamation: Hardcore Edition) */
+.reclamation-atmosphere {
+  background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.14) 0%, transparent 60%),
+              radial-gradient(circle at 15% 75%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 85% 85%, rgba(234, 179, 8, 0.08) 0%, transparent 50%),
+              #060807;
 }
 
-.liminal-card {
-  background: rgba(18, 20, 14, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(234, 179, 8, 0.18);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.liminal-card:hover {
-  border-color: rgba(234, 179, 8, 0.45);
-  box-shadow: 0 12px 40px 0 rgba(234, 179, 8, 0.08), 0 0 0 1px rgba(234, 179, 8, 0.2);
-}
-
-.glow-liminal {
-  text-shadow: 0 0 20px rgba(234, 179, 8, 0.7), 0 0 40px rgba(202, 138, 4, 0.3);
-}
-
-.liminal-hazard-stripes {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgba(234, 179, 8, 0.15),
-    rgba(234, 179, 8, 0.15) 10px,
-    transparent 10px,
-    transparent 20px
-  );
-}
-
+/* Glass cards optimized for GPU rendering */
 .glass-card {
-  background: rgba(13, 16, 23, 0.45);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(13, 16, 23, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.5);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  transform: translateZ(0);
 }
 
 .glass-card:hover {
-  border-color: rgba(242, 125, 38, 0.2);
-  box-shadow: 0 12px 40px 0 rgba(242, 125, 38, 0.04), 0 0 0 1px rgba(242, 125, 38, 0.1);
+  border-color: rgba(242, 125, 38, 0.3);
+  box-shadow: 0 12px 35px 0 rgba(242, 125, 38, 0.08);
 }
 
-.accent-amber {
-  color: #f27d26;
+.reclamation-card {
+  background: rgba(10, 16, 13, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.55);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  transform: translateZ(0);
 }
 
-.bg-accent-amber {
-  background-color: #f27d26;
+.reclamation-card:hover {
+  border-color: rgba(34, 197, 94, 0.45);
+  box-shadow: 0 12px 35px 0 rgba(34, 197, 94, 0.12), 0 0 0 1px rgba(34, 197, 94, 0.2);
 }
 
-.border-accent-amber {
-  border-color: #f27d26;
+.glow-reclamation {
+  text-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(16, 185, 129, 0.35);
 }
 
 .glow-amber {
@@ -79,30 +65,28 @@ body {
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
 }
 
+/* Smooth GPU-accelerated micro-animations */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translateY(0px) translateZ(0);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-6px) translateZ(0);
   }
 }
 
 .float-slow {
-  animation: float 6s ease-in-out infinite;
+  animation: float 5s ease-in-out infinite;
 }
 
 @keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.5;
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.98) translateZ(0);
   }
   50% {
     opacity: 1;
-  }
-  100% {
-    transform: scale(1.05);
-    opacity: 0.5;
+    transform: scale(1.02) translateZ(0);
   }
 }
 
@@ -110,56 +94,78 @@ body {
   animation: pulse-ring 3s ease-in-out infinite;
 }
 
-@keyframes flicker-5s {
-  0%, 82%, 100% {
+/* Wasteland Spores / Dust Particles floating in background */
+@keyframes drift-up {
+  0% {
+    transform: translateY(0) translateX(0) translateZ(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120px) translateX(25px) translateZ(0);
+    opacity: 0;
+  }
+}
+
+.spore-1 {
+  animation: drift-up 9s linear infinite;
+}
+
+.spore-2 {
+  animation: drift-up 13s linear infinite 3s;
+}
+
+.spore-3 {
+  animation: drift-up 11s linear infinite 6s;
+}
+
+/* Subtle bio-pulse for Reclamation core modules */
+@keyframes bio-breath {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(34, 197, 94, 0.35);
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+}
+
+.bio-pulse {
+  animation: bio-breath 4s ease-in-out infinite;
+}
+
+/* Smooth title shimmer */
+@keyframes reclamation-shimmer {
+  0%, 100% {
     opacity: 1;
-    text-shadow: 0 0 20px rgba(234, 179, 8, 0.7), 0 0 40px rgba(202, 138, 4, 0.3);
+    text-shadow: 0 0 20px rgba(34, 197, 94, 0.65), 0 0 35px rgba(16, 185, 129, 0.3);
   }
-  84% {
-    opacity: 0.15;
-    text-shadow: none;
+  50% {
+    opacity: 0.92;
+    text-shadow: 0 0 28px rgba(74, 222, 128, 0.8), 0 0 45px rgba(34, 197, 94, 0.5);
   }
-  86% {
+}
+
+.animate-reclamation-shimmer {
+  animation: reclamation-shimmer 4s ease-in-out infinite;
+}
+
+/* 5-second blinking animation */
+@keyframes blink-5s {
+  0%, 100% {
     opacity: 1;
-    text-shadow: 0 0 30px rgba(234, 179, 8, 0.9), 0 0 50px rgba(202, 138, 4, 0.5);
   }
-  89% {
-    opacity: 0.08;
-    text-shadow: none;
-  }
-  92% {
-    opacity: 0.95;
-    text-shadow: 0 0 22px rgba(234, 179, 8, 0.7);
-  }
-  95% {
+  50% {
     opacity: 0.2;
-    text-shadow: none;
-  }
-  98% {
-    opacity: 1;
-    text-shadow: 0 0 25px rgba(234, 179, 8, 0.8), 0 0 45px rgba(202, 138, 4, 0.4);
   }
 }
 
-.animate-flicker-5s {
-  animation: flicker-5s 5s ease-in-out infinite;
-}
-
-@keyframes blink-text-5s {
-  0%, 84%, 100% {
-    opacity: 1;
-  }
-  86%, 88% {
-    opacity: 0.1;
-  }
-  90%, 93% {
-    opacity: 1;
-  }
-  95%, 97% {
-    opacity: 0.1;
-  }
-}
-
-.animate-blink-5s {
-  animation: blink-text-5s 5s infinite;
+.blink-5s {
+  animation: blink-5s 5s ease-in-out infinite;
 }
