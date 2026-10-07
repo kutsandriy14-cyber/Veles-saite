@@ -951,7 +951,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
             {/* Discord */}
             <a 
-              href="https://discord.gg/QJaNpC6d2" 
+              href="https://discord.gg/EgSkdeJMsd" 
               target="_blank" 
               rel="noreferrer noopener"
               className="flex flex-col gap-4 p-5 rounded-2xl bg-black/50 border border-white/5 hover:border-[#5865F2]/50 hover:bg-[#5865F2]/10 hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] hover:-translate-y-0.5 transition-all duration-300 group"
